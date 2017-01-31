@@ -32,11 +32,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
             if(ldapGroup != null && !"".equals(ldapGroup) && jiraGroup != null && !"".equals(jiraGroup)) {
                 status = "Running.";
                 MessageBean result = MyLdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
-                if( result.getStatus() == 0 ) {
-                    status = result.getMessage();
-                }else{
-                    status = result.getMessage();
-                }
+                status = result.getMessage();
             } else {
                 status = "Failed. Required fields are missing!";
             }                       
