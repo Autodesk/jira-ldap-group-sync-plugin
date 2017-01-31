@@ -1,0 +1,50 @@
+#disable_html_escaping()
+<html>
+<head>
+    <title>$i18n.getText("jira.ldap.group.sync.run.option.label")</title>
+    <meta name="decorator" content="atl.admin" />
+    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()" />
+    $webResourceManager.requireResourcesForContext($i18n.getText("jira-ldap-group-sync-plugin-resources.context"))
+    <script>
+        function prepareRun() {
+            AJS.$("#runStatus").html("Running").stop().show();
+        }
+    </script>
+</head>
+<body>
+
+
+<div id="ldapGroupSyncRun">
+<form id="admin" class="aui" method="post" action="LdapGroupSyncRunAction.jspa" >
+<h2>$i18n.getText("jira.ldap.group.sync.run.option.label")</h2>
+
+<div class="field-group">
+    <label for="ldap_group">
+        $i18n.getText("jira.ldap.group.sync.run.option.ldap_group.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" />
+    <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.ldap_group.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="jira_group">
+        $i18n.getText("jira.ldap.group.sync.run.option.jira_group.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" />
+    <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.jira_group.description")</div>
+</div>
+
+<div class="aui-buttons">
+    <input class="aui-button" type="submit" name="submitted" value="Run &rarr;" onClick="prepareRun();"/>
+</div>
+</form>
+</div>
+
+
+<!-- config status -->
+<p id="runStatus" style="background-color:#E0FFFF;">$!status</p>
+
+</body>
+</html>

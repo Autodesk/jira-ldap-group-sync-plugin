@@ -1,0 +1,2 @@
+/target/*
+!/target/jira-ldap-group-sync-plugin-*.jar

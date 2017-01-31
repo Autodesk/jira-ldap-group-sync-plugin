@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root id="AsdkMyLdapSyncService0001">
+    <description>JIRA Win Groups Sync Service</description>
+    <properties>
+        <property>
+            <key>is_active</key>
+            <name>Is Active: </name>
+            <type>string</type>
+        </property>
+    </properties>
+</root>

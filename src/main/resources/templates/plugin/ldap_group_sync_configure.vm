@@ -1,0 +1,172 @@
+#disable_html_escaping()
+<html>
+<head>
+    <title>$i18n.getText("jira.ldap.group.configure.option.label")</title>
+    <meta name="decorator" content="atl.admin" />
+    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()" />
+    $webResourceManager.requireResourcesForContext($i18n.getText("jira-ldap-group-sync-plugin-resources.context"))
+    <script>
+        function prepareEdit() {
+            AJS.$("#ldapConfigDisplay").stop().hide();
+            AJS.$("#ldapConfigEdit").stop().show();
+        }
+        function prepareCancel() {
+            AJS.$("#ldapConfigDisplay").stop().show();
+            AJS.$("#ldapConfigEdit").stop().hide();
+        }        
+    </script>   
+</head>
+<body>
+
+
+<!-- config display -->
+
+<div id="ldapConfigDisplay">
+<form id="admin" class="aui" method="post" action="LdapGroupSyncConfigAction.jspa">
+<h2>$i18n.getText("jira.ldap.group.configure.option.label")</h2>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.ldap_url.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="ldap_url" class="text long-field" value="$!ldap_url" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.ldap_url.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.security_principal.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="security_principal" class="text long-field" value="$!security_principal" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.security_principal.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.security_password.label"):
+    </label>
+    <input type="password" id="disabled-field-id" name="security_password" class="text" value="$!security_password" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.security_password.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.base_dn.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="base_dn" class="text long-field" value="$!base_dn" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.base_dn.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.search_filter.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="search_filter" class="text long-field" value="$!search_filter" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.search_filter.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.user_attr.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="member_attr" class="text" value="$!user_attr" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_attr.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.member_attr.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="member_attr" class="text" value="$!member_attr" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.member_attr.description")</div>
+</div>
+
+<div class="aui-buttons">
+    <input class="aui-button" type="button" name="edit" value="Edit &uarr;" onClick="prepareEdit();" /> 
+</div>
+</form>
+</div>
+
+
+
+<!-- config edit -->
+
+
+<div id="ldapConfigEdit" style="display: none;">
+<form id="admin" class="aui" method="post" action="LdapGroupSyncConfigAction.jspa" >
+<h2>$i18n.getText("jira.ldap.group.configure.option.label") &rarr; EDIT</h2>
+
+<div class="field-group">
+    <label for="ldap_url">
+        $i18n.getText("jira.ldap.group.configure.option.ldap_url.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="ldap_url" name="ldap_url" class="text long-field" value="$!ldap_url" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.ldap_url.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="security_principal">
+        $i18n.getText("jira.ldap.group.configure.option.security_principal.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="security_principal" name="security_principal" class="text long-field" value="$!security_principal" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.security_principal.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="security_password">
+        $i18n.getText("jira.ldap.group.configure.option.security_password.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="password" id="security_password" name="security_password" class="text" value="$!security_password" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.security_password.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="base_dn">
+        $i18n.getText("jira.ldap.group.configure.option.base_dn.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="base_dn" name="base_dn" class="text long-field" value="$!base_dn" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.base_dn.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="search_filter">
+        $i18n.getText("jira.ldap.group.configure.option.search_filter.label"):
+    </label>
+    <input type="text" id="search_filter" name="search_filter" class="text long-field" value="$!search_filter" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.search_filter.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="user_attr">
+        $i18n.getText("jira.ldap.group.configure.option.user_attr.label"):
+    </label>
+    <input type="text" id="user_attr" name="user_attr" class="text" value="$!user_attr" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_attr.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="member_attr">
+        $i18n.getText("jira.ldap.group.configure.option.member_attr.label"):
+    </label>
+    <input type="text" id="member_attr" name="member_attr" class="text" value="$!member_attr" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.member_attr.description")</div>
+</div>
+
+<div class="aui-buttons">
+    <input class="aui-button" type="submit" name="submitted" value="Save &rarr; Initialize" />
+    <input class="aui-button" type="reset" name="reset" value="Reset" />
+    <input class="aui-button" type="button" name="cancel" value="Cancel" onClick="prepareCancel();" />
+</div>
+</form>
+
+</div>
+
+<!-- config status -->
+<p style="background-color:#E0FFFF;">$!status</p>
+
+</body>
+</html>

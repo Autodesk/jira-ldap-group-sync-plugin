@@ -1,0 +1,74 @@
+#disable_html_escaping()
+<html>
+<head>
+    <title>$i18n.getText("jira.ldap.group.sync.maps.option.label")</title>
+    <meta name="decorator" content="atl.admin" />
+    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()" />
+    $webResourceManager.requireResourcesForContext($i18n.getText("jira-ldap-group-sync-plugin-resources.context"))
+    <script>
+        function prepareEdit() {
+            AJS.$("#ldapGroupMapDisplay").stop().hide();
+            AJS.$("#ldapGroupMapEdit").stop().show();
+        }
+        function prepareCancel() {
+            AJS.$("#ldapGroupMapDisplay").stop().show();
+            AJS.$("#ldapGroupMapEdit").stop().hide();
+        }        
+    </script>   
+</head>
+<body>
+
+
+<!-- config display -->
+
+<div id="ldapGroupMapDisplay">
+<form id="admin" class="aui" method="post" action="LdapGroupSyncMapAction.jspa">
+<h2>$i18n.getText("jira.ldap.group.sync.maps.option.label")</h2>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.sync.maps.option.groups_map.label"):
+        <!--<span class="aui-icon icon-required"></span>-->
+    </label>
+    <textarea id="disabled-field-id" name="groups_map" class="text-area" rows="10" cols="100" disabled="">$!groups_map</textarea>
+    <div class="description">$i18n.getText("jira.ldap.group.sync.maps.option.groups_map.description")</div>
+</div>
+
+<div class="aui-buttons">
+    <input class="aui-button" type="button" name="edit" value="Edit &uarr;" onClick="prepareEdit();" /> 
+</div>
+</form>
+</div>
+
+
+
+<!-- options edit -->
+
+
+<div id="ldapGroupMapEdit" style="display: none;">
+<form id="admin" class="aui" method="post" action="LdapGroupSyncMapAction.jspa" >
+<h2>$i18n.getText("jira.ldap.group.sync.maps.option.label") &rarr; EDIT</h2>
+
+<div class="field-group">
+    <label for="jira_event_id">
+        $i18n.getText("jira.ldap.group.sync.maps.option.groups_map.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <textarea id="groups_map" name="groups_map" class="text-area" rows="10" cols="100">$!groups_map</textarea>
+    <div class="description">$i18n.getText("jira.ldap.group.sync.maps.option.groups_map.description")</div>
+</div>
+
+<div class="aui-buttons">
+    <input class="aui-button" type="submit" name="submitted" value="Save &rarr;" />
+    <input class="aui-button" type="reset" name="reset" value="Reset" />
+    <input class="aui-button" type="button" name="cancel" value="Cancel" onClick="prepareCancel();" />
+</div>
+</form>
+</div>
+
+
+<!-- config status -->
+<p style="background-color:#E0FFFF;">$!status</p>
+
+</body>
+</html>
