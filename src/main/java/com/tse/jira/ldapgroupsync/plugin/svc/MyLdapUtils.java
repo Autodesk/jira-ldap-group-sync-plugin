@@ -87,7 +87,7 @@ public class MyLdapUtils {
                 SearchResult searchResult = (SearchResult) answer.next();                
                 Attributes attrs = searchResult.getAttributes();
                 if ( attrs != null ) {
-                    Attribute attr = (Attribute) attrs.get("samaccountname");
+                    Attribute attr = (Attribute) attrs.get(USER_ATTR);
                     NamingEnumeration e = attr.getAll();
                     while (e.hasMore()) {
                         String entry = (String) e.next();

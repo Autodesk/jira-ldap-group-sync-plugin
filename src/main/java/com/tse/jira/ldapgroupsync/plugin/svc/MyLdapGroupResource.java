@@ -7,8 +7,8 @@ package com.tse.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
-import com.atlassian.jira.user.util.UserUtil;
-import com.atlassian.sal.api.user.UserManager;
+import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.user.ApplicationUser;
 import com.tse.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
 import com.tse.jira.ldapgroupsync.plugin.model.MessageBean;
 import javax.ws.rs.Consumes;
@@ -27,14 +27,12 @@ import org.apache.log4j.Logger;
 public class MyLdapGroupResource {
     
     private static final Logger LOGGER = Logger.getLogger(MyLdapGroupResource.class);
+    private final JiraAuthenticationContext jiraAuthenticationContext;
     private GlobalPermissionManager permissionManager = null;
-    private UserManager userManager = null;
-    private UserUtil userUtil = null;
     
-    public MyLdapGroupResource(GlobalPermissionManager permissionManager, UserManager userManager, UserUtil userUtil) {
+    public MyLdapGroupResource(JiraAuthenticationContext jiraAuthenticationContext, GlobalPermissionManager permissionManager) {
+        this.jiraAuthenticationContext = jiraAuthenticationContext;
         this.permissionManager = permissionManager;
-        this.userManager = userManager;
-        this.userUtil = userUtil;
     }
     
     @POST
@@ -49,8 +47,8 @@ public class MyLdapGroupResource {
         MessageBean messageBean = new MessageBean();
         
         //check permissions
-        String username = userManager.getRemoteUser().getUsername();       
-        if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, userUtil.getUserByName(username)) == false ) {
+        ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
+        if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, loggedInAppUser) == false ) {
             messageBean.setMessage("[Error] Permission denied. System admin access is required.");
             return Response.status(Response.Status.FORBIDDEN).entity(messageBean).build();
         }
