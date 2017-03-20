@@ -13,8 +13,9 @@ public class LdapGroupSyncConfigBean {
     private String ldap_url;
     private String security_principal;
     private String security_password;
-    private String search_filter;
-    private String member_attr;
+    private String groupSearch_filter;
+    private String groupMemberSearch_filter;
+    private String userMemberSearch_filter;
     private String user_attr;
     private String base_dn;    
 
@@ -42,29 +43,13 @@ public class LdapGroupSyncConfigBean {
         this.security_password = security_password;
     }
 
-    public String getSearch_filter() {
-        return search_filter;
-    }
-
-    public void setSearch_filter(String search_filter) {
-        this.search_filter = search_filter;
-    }
-
     public String getUser_attr() {
         return user_attr;
     }
 
     public void setUser_attr(String user_attr) {
         this.user_attr = user_attr;
-    }        
-
-    public String getMember_attr() {
-        return member_attr;
-    }
-
-    public void setMember_attr(String member_attr) {
-        this.member_attr = member_attr;
-    }        
+    }       
     
     public String getBase_dn() {
         return base_dn;
@@ -72,5 +57,29 @@ public class LdapGroupSyncConfigBean {
 
     public void setBase_dn(String base_dn) {
         this.base_dn = base_dn;
+    }
+
+    public String getGroupSearch_filter() {
+        return groupSearch_filter;
+    }
+
+    public void setGroupSearch_filter(String groupSearch_filter) {
+        this.groupSearch_filter = groupSearch_filter;
+    }
+
+    public String getGroupMemberSearch_filter() {
+        return groupMemberSearch_filter;
+    }
+
+    public void setGroupMemberSearch_filter(String groupMemberSearch_filter) {
+        this.groupMemberSearch_filter = groupMemberSearch_filter;
+    }
+
+    public String getUserMemberSearch_filter() {
+        return userMemberSearch_filter;
+    }
+
+    public void setUserMemberSearch_filter(String userMemberSearch_filter) {
+        this.userMemberSearch_filter = userMemberSearch_filter;
     }        
 }

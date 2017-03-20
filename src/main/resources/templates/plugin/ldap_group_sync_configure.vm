@@ -59,10 +59,26 @@
 
 <div class="field-group">
     <label for="disabled-field-id">
-        $i18n.getText("jira.ldap.group.configure.option.search_filter.label"):
+        $i18n.getText("jira.ldap.group.configure.option.group_search_filter.label"):
     </label>
-    <input type="text" id="disabled-field-id" name="search_filter" class="text long-field" value="$!search_filter" disabled=""/>
-    <div class="description">$i18n.getText("jira.ldap.group.configure.option.search_filter.description")</div>
+    <input type="text" id="disabled-field-id" name="groupSearch_filter" class="text long-field" value="$!groupSearch_filter" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.group_search_filter.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.group_member_search_filter.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="groupMemberSearch_filter" class="text long-field" value="$!groupMemberSearch_filter" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.group_member_search_filter.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.user_member_search_filter.label"):
+    </label>
+    <input type="text" id="disabled-field-id" name="userMemberSearch_filter" class="text long-field" value="$!userMemberSearch_filter" disabled=""/>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_member_search_filter.description")</div>
 </div>
 
 <div class="field-group">
@@ -71,14 +87,6 @@
     </label>
     <input type="text" id="disabled-field-id" name="member_attr" class="text" value="$!user_attr" disabled=""/>
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_attr.description")</div>
-</div>
-
-<div class="field-group">
-    <label for="disabled-field-id">
-        $i18n.getText("jira.ldap.group.configure.option.member_attr.label"):
-    </label>
-    <input type="text" id="disabled-field-id" name="member_attr" class="text" value="$!member_attr" disabled=""/>
-    <div class="description">$i18n.getText("jira.ldap.group.configure.option.member_attr.description")</div>
 </div>
 
 <div class="aui-buttons">
@@ -133,11 +141,27 @@
 </div>
 
 <div class="field-group">
-    <label for="search_filter">
-        $i18n.getText("jira.ldap.group.configure.option.search_filter.label"):
+    <label for="group_search_filter">
+        $i18n.getText("jira.ldap.group.configure.option.group_search_filter.label"):
     </label>
-    <input type="text" id="search_filter" name="search_filter" class="text long-field" value="$!search_filter" />
-    <div class="description">$i18n.getText("jira.ldap.group.configure.option.search_filter.description")</div>
+    <input type="text" id="groupSearch_filter" name="groupSearch_filter" class="text long-field" value="$!groupSearch_filter" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.group_search_filter.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="group_member_search_filter">
+        $i18n.getText("jira.ldap.group.configure.option.group_member_search_filter.label"):
+    </label>
+    <input type="text" id="groupMemberSearch_filter" name="groupMemberSearch_filter" class="text long-field" value="$!groupMemberSearch_filter" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.group_member_search_filter.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="user_member_search_filter">
+        $i18n.getText("jira.ldap.group.configure.option.user_member_search_filter.label"):
+    </label>
+    <input type="text" id="userMemberSearch_filter" name="userMemberSearch_filter" class="text long-field" value="$!userMemberSearch_filter" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_member_search_filter.description")</div>
 </div>
 
 <div class="field-group">
@@ -146,14 +170,6 @@
     </label>
     <input type="text" id="user_attr" name="user_attr" class="text" value="$!user_attr" />
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_attr.description")</div>
-</div>
-
-<div class="field-group">
-    <label for="member_attr">
-        $i18n.getText("jira.ldap.group.configure.option.member_attr.label"):
-    </label>
-    <input type="text" id="member_attr" name="member_attr" class="text" value="$!member_attr" />
-    <div class="description">$i18n.getText("jira.ldap.group.configure.option.member_attr.description")</div>
 </div>
 
 <div class="aui-buttons">

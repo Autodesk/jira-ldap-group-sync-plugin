@@ -42,16 +42,18 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
             String LDAP_URL = configBean.getLdap_url();
             String SECURITY_PRINCIPAL = configBean.getSecurity_principal();
             String SECURITY_PASSWORD = configBean.getSecurity_password();
-            String SEARCH_FILTER = configBean.getSearch_filter();
+            String GROUP_SEARCH_FILTER = configBean.getGroupSearch_filter();
+            String GROUP_MEMBER_SEARCH_FILTER = configBean.getGroupMemberSearch_filter();
+            String USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
             String BASE_DN = configBean.getBase_dn();
-            String MEMBER_ATTR = configBean.getMember_attr();
             String USER_ATTR = configBean.getUser_attr();
             
             LOGGER.debug("LDAP URL -> "+ LDAP_URL);
             LOGGER.debug("SECURITY PRINCIPAL -> "+ SECURITY_PRINCIPAL);
-            LOGGER.debug("SEARCH FILTER -> "+ SEARCH_FILTER);
+            LOGGER.debug("GROUP SEARCH FILTER -> "+ GROUP_SEARCH_FILTER);
+            LOGGER.debug("GROUP MEMBER SEARCH FILTER -> "+ GROUP_MEMBER_SEARCH_FILTER);
             LOGGER.debug("BASE DN -> "+ BASE_DN);
-            LOGGER.debug("MEMBER ATTR -> "+ MEMBER_ATTR);
+            LOGGER.debug("USER MEMBER SEARCH FILTER -> "+ USER_MEMBER_SEARCH_FILTER);
             LOGGER.debug("USER ATTR -> "+ USER_ATTR);
             
             if( LDAP_URL != null && !"".equals(LDAP_URL) && SECURITY_PRINCIPAL != null && !"".equals(SECURITY_PRINCIPAL) 
@@ -63,21 +65,30 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
                 MyLdapUtils.SECURITY_PASSWORD = configBean.getSecurity_password();
                 MyLdapUtils.BASE_DN = configBean.getBase_dn();
                 
-                if( SEARCH_FILTER != null && !"".equals(SEARCH_FILTER) ) {
-                    MyLdapUtils.SEARCH_FILTER = configBean.getSearch_filter();
+                if(USER_MEMBER_SEARCH_FILTER != null && !"".equals(USER_MEMBER_SEARCH_FILTER)) {
+                    MyLdapUtils.USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
                 } else {
-                    MyLdapUtils.SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))"; //default
+                    MyLdapUtils.USER_MEMBER_SEARCH_FILTER = "(&(objectClass=person)(memberOf={0}))"; //default
                 }
-                if( MEMBER_ATTR != null && !"".equals(MEMBER_ATTR) ) { 
-                    MyLdapUtils.MEMBER_ATTR = configBean.getMember_attr();
+                
+                if(GROUP_SEARCH_FILTER != null && !"".equals(GROUP_SEARCH_FILTER)) { 
+                    MyLdapUtils.GROUP_SEARCH_FILTER = configBean.getGroupSearch_filter();
                 } else {
-                    MyLdapUtils.MEMBER_ATTR = "member"; //default
+                    MyLdapUtils.GROUP_SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))"; //default
                 }
-                if( USER_ATTR != null && !"".equals(USER_ATTR) ) {
+                
+                if(GROUP_MEMBER_SEARCH_FILTER != null && !"".equals(GROUP_MEMBER_SEARCH_FILTER)) { 
+                    MyLdapUtils.GROUP_MEMBER_SEARCH_FILTER = configBean.getGroupMemberSearch_filter();
+                } else {
+                    MyLdapUtils.GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memberOf={0}))"; //default
+                }
+                
+                if(USER_ATTR != null && !"".equals(USER_ATTR)) {
                     MyLdapUtils.USER_ATTR = configBean.getUser_attr();
                 } else {
                     MyLdapUtils.USER_ATTR = "sAMAccountName"; //default
                 }
+                
                 MyLdapUtils.destroyLdapContext(); //to pick latest config
                 status = "Saved.";
             } else {
@@ -108,12 +119,12 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
         return configBean.getSecurity_password();
     }
     
-    public String getSearch_filter() {
-        return configBean.getSearch_filter();
+    public String getUserMemberSearch_filter() {
+        return configBean.getUserMemberSearch_filter();
     }
 
-    public void setSearch_filter(String search_filter) {
-        configBean.setSearch_filter(search_filter);
+    public void setUserMemberSearch_filter(String search_filter) {
+        configBean.setUserMemberSearch_filter(search_filter);
     }
     
     public String getUser_attr() {
@@ -124,12 +135,20 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
         configBean.setUser_attr(user_attr);
     }
     
-    public String getMember_attr() {
-        return configBean.getMember_attr();
+    public String getGroupSearch_filter() {
+        return configBean.getGroupSearch_filter();
     }
 
-    public void setMember_attr(String member_attr) {
-        configBean.setMember_attr(member_attr);
+    public void setGroupSearch_filter(String search_filter) {
+        configBean.setGroupSearch_filter(search_filter);
+    }
+    
+    public String getGroupMemberSearch_filter() {
+        return configBean.getGroupMemberSearch_filter();
+    }
+
+    public void setGroupMemberSearch_filter(String search_filter) {
+        configBean.setGroupMemberSearch_filter(search_filter);
     }
     
     public String getBase_dn() {

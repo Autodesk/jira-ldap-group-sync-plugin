@@ -13,8 +13,8 @@ import java.util.Set;
 
 public class MyLdapGroupSyncDAO
 {
-    private static final Logger LOGGER = Logger.getLogger(MyLdapGroupSyncDAO.class);    
-    private static MyLdapGroupSyncDAO myLdapGroupSyncDAO = null;    
+    private static final Logger LOGGER = Logger.getLogger(MyLdapGroupSyncDAO.class);
+    private static MyLdapGroupSyncDAO myLdapGroupSyncDAO = null;
     private static Set<String> defaultJiraGroups = null;
     public static String ldapGroupSyncMap = null;
     
@@ -24,8 +24,8 @@ public class MyLdapGroupSyncDAO
         if( ldapGroupSyncMap == null || "".equals(ldapGroupSyncMap) ) ldapGroupSyncMap = "{}"; //default
         //default jira groups to skip
         defaultJiraGroups = new HashSet<String>();
-        defaultJiraGroups.add("jira-users");        
-        defaultJiraGroups.add("jira-administrators");        
+        defaultJiraGroups.add("jira-users");
+        defaultJiraGroups.add("jira-administrators");
         defaultJiraGroups.add("jira-software-users");
         defaultJiraGroups.add("jira-developers");
     }
@@ -65,7 +65,7 @@ public class MyLdapGroupSyncDAO
             return message;
         }
         
-        List<String> ldap_group_users = MyLdapUtils.getInstance().getGroupMembers(ldap_group);                
+        Set<String> ldap_group_users = MyLdapUtils.getInstance().getGroupMembers(ldap_group);                
         if( ldap_group_users == null ) {
             LOGGER.warn("LDAP Group ("+ldap_group+") does not exists.");
             message.setMessage("LDAP Group ("+ldap_group+") does not exists.");

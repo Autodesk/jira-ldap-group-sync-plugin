@@ -10,8 +10,10 @@ import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.tse.jira.ldapgroupsync.plugin.config.LdapGroupSyncConfigMgr;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -35,10 +37,11 @@ public class MyLdapUtils {
     public static String LDAP_URL = null;
     public static String SECURITY_PRINCIPAL = null;
     public static String SECURITY_PASSWORD = null;
-    public static String BASE_DN = null;
-    public static String SEARCH_FILTER = null;
+    public static String BASE_DN = null;    
+    public static String GROUP_SEARCH_FILTER = null;
+    public static String GROUP_MEMBER_SEARCH_FILTER = null;
+    public static String USER_MEMBER_SEARCH_FILTER = null;    
     public static String USER_ATTR = null;
-    public static String MEMBER_ATTR = null;
     
     private MyLdapUtils() {
         ApplicationProperties props = ComponentAccessor.getApplicationProperties();
@@ -46,14 +49,18 @@ public class MyLdapUtils {
         SECURITY_PRINCIPAL = props.getString(LdapGroupSyncConfigMgr.SECURITY_PRINCIPAL);
         SECURITY_PASSWORD = props.getString(LdapGroupSyncConfigMgr.SECURITY_PASSWORD);
         BASE_DN = props.getString(LdapGroupSyncConfigMgr.BASE_DN);
-        SEARCH_FILTER = props.getString(LdapGroupSyncConfigMgr.SEARCH_FILTER);
-        MEMBER_ATTR = props.getString(LdapGroupSyncConfigMgr.MEMBER_ATTR);
+        GROUP_SEARCH_FILTER = props.getString(LdapGroupSyncConfigMgr.GROUP_SEARCH_FILTER);
+        USER_MEMBER_SEARCH_FILTER = props.getString(LdapGroupSyncConfigMgr.USER_MEMBER_SEARCH_FILTER);
+        GROUP_MEMBER_SEARCH_FILTER = props.getString(LdapGroupSyncConfigMgr.GROUP_MEMBER_SEARCH_FILTER);
         USER_ATTR = props.getString(LdapGroupSyncConfigMgr.USER_ATTR);
-        if( SEARCH_FILTER == null || "".equals(SEARCH_FILTER) ) { //default values
-            SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))";
+        if(GROUP_SEARCH_FILTER == null || "".equals(GROUP_SEARCH_FILTER)) { //default values
+            GROUP_SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))";
         }
-        if( MEMBER_ATTR == null || "".equals(MEMBER_ATTR) ) {
-            MEMBER_ATTR = "member";
+        if( USER_MEMBER_SEARCH_FILTER == null || "".equals(USER_MEMBER_SEARCH_FILTER) ) {
+            USER_MEMBER_SEARCH_FILTER = "(&(objectClass=person)(memeberOf={0}))";
+        }
+        if( GROUP_MEMBER_SEARCH_FILTER == null || "".equals(GROUP_MEMBER_SEARCH_FILTER) ) {
+            GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memeberOf={0}))";
         }
         if( USER_ATTR == null || "".equals(USER_ATTR) ) {
             USER_ATTR = "sAMAccountName";
@@ -67,38 +74,81 @@ public class MyLdapUtils {
         return myLdapUtils;
     }
     
-    public List<String> getGroupMembers(String groupName) {
-        List<String> users = null;
+    private static List<String> getUsersInGroup(LdapContext ctx, String groupName) {
+        List<String> users = new ArrayList<String>();
+        try {
+            SearchControls searchCtls = new SearchControls();
+            searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            
+            String searchFilter = MessageFormat.format(USER_MEMBER_SEARCH_FILTER, groupName);
+            
+            NamingEnumeration answer = ctx.search(BASE_DN, searchFilter, getMemberSearchControls());
+            while (answer.hasMoreElements()) {
+                SearchResult searchResult = (SearchResult) answer.next();                
+                Attributes attrs = searchResult.getAttributes();
+                if ( attrs != null ) {
+                    Attribute attr = (Attribute) attrs.get("samaccountname");
+                    NamingEnumeration e = attr.getAll();
+                    while (e.hasMore()) {
+                        String entry = (String) e.next();
+                        users.add(entry);                        
+                    }
+                } else {
+                    LOGGER.debug("No members for groups found");
+                }
+            }
+        } catch (NamingException e) {
+            e.getLocalizedMessage();
+        }
+        return users;
+    }   
+    
+    public static List<String> getNestedGroups(LdapContext ctx, String groupName) {
+        List<String> groups = new ArrayList<String>();
+        try {
+            if( ctx != null ) {
+                String searchFilter = MessageFormat.format(GROUP_MEMBER_SEARCH_FILTER, groupName);
+                
+                NamingEnumeration answer = ctx.search(BASE_DN, searchFilter, getGroupSearchControls());
+                
+                while (answer.hasMoreElements()) {
+                    SearchResult sr = (SearchResult)answer.next();
+                    groups.add(sr.getNameInNamespace());
+                }
+            }
+        } catch (NamingException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+        return groups;
+    }
+    
+    public Set<String> getGroupMembers(String groupName) {        
+        Set<String> users = new HashSet<String>();
         LdapContext ctx = getLdapContext();
         try {
-            if( ctx != null ) {                
-                //specify the LDAP search filter
-                String searchFilter = MessageFormat.format(SEARCH_FILTER, groupName);
-                //Search for objects using the filter
+            if( ctx != null ) {
+                String searchFilter = MessageFormat.format(GROUP_SEARCH_FILTER, groupName);
+                
                 NamingEnumeration answer = ctx.search(BASE_DN, searchFilter, getGroupSearchControls());
+                
                 if (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult)answer.next();                
-                    LOGGER.debug(">>>" + sr.getName());
+                    LOGGER.debug(">>>" + sr.getNameInNamespace());
                     
-                    //Print out the members
-                    Attributes attrs = sr.getAttributes();
-                    if ( attrs != null ) {
-                        users = new ArrayList<String>();
-                        try {
-                            Attribute attr = (Attribute) attrs.get(MEMBER_ATTR);
-                            for ( NamingEnumeration e = attr.getAll(); e.hasMore(); ) {
-                                String entry = (String) e.next();
-                                LOGGER.debug(" = " +  entry);
-                                String[] entryNames = entry.split(",");
-                                String userName = getUserInfo(entryNames[0], ctx, getUserSearchControls());
-                                if( userName != null ) users.add(userName);
-                                //LOGGER.debug(" = " +  userName);
-                            }                       
-                        } catch (NamingException e)     {
-                            LOGGER.error(e.getLocalizedMessage());
+                    List<String> new_users_list = getUsersInGroup(ctx, sr.getNameInNamespace());
+                    if(new_users_list != null) {
+                        users.addAll(new_users_list);
+                    }
+                    
+                    // support nested groups
+                    List<String> groups = getNestedGroups(ctx, sr.getNameInNamespace());
+                    if(groups != null) {
+                        for(String group : groups) {
+                            List<String> nested_user_list = getUsersInGroup(ctx, group);
+                            if(nested_user_list != null) {
+                                users.addAll(nested_user_list);
+                            }
                         }
-                    } else {
-                        LOGGER.warn("No members for groups found");
                     }
                 }
             }
@@ -118,7 +168,7 @@ public class MyLdapUtils {
         LdapContext ctx = null;
         if( LDAP_URL != null && !"".equals(LDAP_URL) && SECURITY_PRINCIPAL != null && !"".equals(SECURITY_PRINCIPAL) 
                 && SECURITY_PASSWORD != null && !"".equals(SECURITY_PASSWORD) && BASE_DN != null && !"".equals(BASE_DN) 
-                && SEARCH_FILTER != null && !"".equals(SEARCH_FILTER) && MEMBER_ATTR != null && !"".equals(MEMBER_ATTR)
+                && GROUP_SEARCH_FILTER != null && !"".equals(GROUP_SEARCH_FILTER)
                 && USER_ATTR != null && !"".equals(USER_ATTR) ) {
             try {
                 Properties ldap_settings = getLdapProperties();                
@@ -149,38 +199,21 @@ public class MyLdapUtils {
             properties.put("com.sun.jndi.ldap.read.timeout", "15000");
         }
         return properties;
-    }
+    }        
     
-    private static String getUserInfo(String userName, LdapContext ctx, SearchControls searchControls) {
-        String username = null;
-        try {
-            NamingEnumeration<SearchResult> answer = ctx.search(BASE_DN, userName, searchControls);
-            if (answer.hasMore()) {
-                Attributes attrs = answer.next().getAttributes();
-                if( attrs.get(USER_ATTR) != null ) {
-                    username = attrs.get(USER_ATTR).get().toString();
-                }
-            } else {
-                LOGGER.warn(userName+" not found.");
-            }
-        } catch (NamingException e) {
-            LOGGER.error(e.getLocalizedMessage());
-        }
-        return username;
-    }
-    
-    private static SearchControls getUserSearchControls() {
+    private static SearchControls getMemberSearchControls() {
         SearchControls cons = new SearchControls();
         cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
         String[] attrIDs = {USER_ATTR};
         cons.setReturningAttributes(attrIDs);
+        cons.setCountLimit(1000); //limit
         return cons;
     }
     
     private static SearchControls getGroupSearchControls() {
         SearchControls cons = new SearchControls();
         cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        String[] attrIDs = {MEMBER_ATTR};
+        String[] attrIDs = {"cn"};
         cons.setReturningAttributes(attrIDs);
         return cons;
     }
