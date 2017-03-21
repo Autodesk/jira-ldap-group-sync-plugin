@@ -40,15 +40,17 @@ public class MyLdapGroupResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/sync")
     public Response runLdapGroupSync(LdapGroupSyncBean syncBean) {
-    
-        LOGGER.debug("processing rest sync request /"+ syncBean.getLdapGroup() + "/" + syncBean.getJiraGroup());
+            
         long startTime = System.currentTimeMillis();
         
         //message object
         MessageBean messageBean = new MessageBean();
+                
+        ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
+        
+        LOGGER.debug("["+loggedInAppUser.getUsername() +"] ["+ syncBean.getLdapGroup() +":"+ syncBean.getJiraGroup() +"] Started.");
         
         //check permissions
-        ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
         if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, loggedInAppUser) == false ) {
             messageBean.setMessage("[Error] Permission denied. System admin access is required.");
             return Response.status(Response.Status.FORBIDDEN).entity(messageBean).build();
@@ -65,7 +67,9 @@ public class MyLdapGroupResource {
         MessageBean result = syncDAO.sync(syncBean.getLdapGroup(), syncBean.getJiraGroup());
         
         long totalTime = System.currentTimeMillis() - startTime;
-        LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+        
+        LOGGER.debug("["+loggedInAppUser.getUsername()+"] ["+ syncBean.getLdapGroup() +":"+ 
+                syncBean.getJiraGroup() +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         
         result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         return Response.ok(result).build();
