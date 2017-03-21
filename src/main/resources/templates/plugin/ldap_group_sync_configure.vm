@@ -89,6 +89,20 @@
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_attr.description")</div>
 </div>
 
+<div class="field-group">
+    <label for="disabled-field-id">
+        $i18n.getText("jira.ldap.group.configure.option.is_nested.label"):
+    </label>
+    <select id="isNested" name="isNested" class="text" disabled="">
+        #foreach ($option in ["FALSE", "TRUE"])
+            <option value="$option"
+            #if ($option && $option == $isNested)selected#end
+            >$option</option>
+        #end
+    </select>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.is_nested.description")</div>
+</div>
+
 <div class="aui-buttons">
     <input class="aui-button" type="button" name="edit" value="Edit &uarr;" onClick="prepareEdit();" /> 
 </div>
@@ -170,6 +184,20 @@
     </label>
     <input type="text" id="user_attr" name="user_attr" class="text" value="$!user_attr" />
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.user_attr.description")</div>
+</div>
+
+<div class="field-group">
+    <label for="isNested">
+        $i18n.getText("jira.ldap.group.configure.option.is_nested.label"):
+    </label>
+    <select id="isNested" name="isNested" class="text">
+        #foreach ($option in ["FALSE", "TRUE"])
+            <option value="$option"
+            #if ($option && $option == $isNested)selected#end
+            >$option</option>
+        #end
+    </select>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.is_nested.description")</div>
 </div>
 
 <div class="aui-buttons">

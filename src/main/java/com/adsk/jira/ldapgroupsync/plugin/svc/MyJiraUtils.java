@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tse.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.exception.OperationNotPermittedException;

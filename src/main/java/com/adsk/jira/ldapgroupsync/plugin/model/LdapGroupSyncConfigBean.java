@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tse.jira.ldapgroupsync.plugin.model;
+package com.adsk.jira.ldapgroupsync.plugin.model;
 
 /**
  *
@@ -17,7 +17,8 @@ public class LdapGroupSyncConfigBean {
     private String groupMemberSearch_filter;
     private String userMemberSearch_filter;
     private String user_attr;
-    private String base_dn;    
+    private String base_dn;
+    private String isNested;
 
     public String getLdap_url() {
         return ldap_url;
@@ -81,5 +82,13 @@ public class LdapGroupSyncConfigBean {
 
     public void setUserMemberSearch_filter(String userMemberSearch_filter) {
         this.userMemberSearch_filter = userMemberSearch_filter;
-    }        
+    }
+
+    public String getIsNested() {
+        return isNested;
+    }
+
+    public void setIsNested(String isNested) {
+        this.isNested = isNested;
+    }   
 }

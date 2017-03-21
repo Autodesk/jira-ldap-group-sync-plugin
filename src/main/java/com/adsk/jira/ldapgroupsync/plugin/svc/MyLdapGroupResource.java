@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tse.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
-import com.tse.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
-import com.tse.jira.ldapgroupsync.plugin.model.MessageBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -42,6 +42,7 @@ public class MyLdapGroupResource {
     public Response runLdapGroupSync(LdapGroupSyncBean syncBean) {
     
         LOGGER.debug("processing rest sync request /"+ syncBean.getLdapGroup() + "/" + syncBean.getJiraGroup());
+        long startTime = System.currentTimeMillis();
         
         //message object
         MessageBean messageBean = new MessageBean();
@@ -63,6 +64,10 @@ public class MyLdapGroupResource {
         MyLdapGroupSyncDAO syncDAO = MyLdapGroupSyncDAO.getInstance();
         MessageBean result = syncDAO.sync(syncBean.getLdapGroup(), syncBean.getJiraGroup());
         
+        long totalTime = System.currentTimeMillis() - startTime;
+        LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+        
+        result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         return Response.ok(result).build();
     }
 }

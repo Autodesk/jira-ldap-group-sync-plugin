@@ -1,4 +1,4 @@
-package com.tse.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
@@ -6,8 +6,8 @@ import com.google.gson.Gson;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import com.tse.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
-import com.tse.jira.ldapgroupsync.plugin.model.MessageBean;
+import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
+import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,8 +53,6 @@ public class MyLdapGroupSyncDAO
     }
     
     public MessageBean sync(String ldap_group, String jira_group) {
-        long startTime = System.currentTimeMillis();
-        long totalTime = 0;
         
         LOGGER.debug(" >>> "+ ldap_group +" : "+ jira_group +" <<< ");
         MessageBean message = new MessageBean();
@@ -93,14 +91,11 @@ public class MyLdapGroupSyncDAO
                     MyJiraUtils.getInstance().addUserToGroup(i, jira_group);
                 }
             }
-            
-            totalTime = System.currentTimeMillis() - startTime;
-            message.setMessage("Successful. Size("+ldap_group_users.size()+"). Took " + totalTime/ 1000d +" Seconds");
+                        
+            message.setMessage("Successful. Fetch Size("+ldap_group_users.size()+")");
             message.setStatus(0);
         
         }
-        totalTime = System.currentTimeMillis() - startTime;
-        LOGGER.info(totalTime/ 1000d +" Seconds");
         
         return message;
     }

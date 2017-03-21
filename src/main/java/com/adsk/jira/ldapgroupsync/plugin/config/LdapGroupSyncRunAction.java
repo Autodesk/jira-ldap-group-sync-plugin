@@ -1,10 +1,10 @@
-package com.tse.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.config;
 
 import com.atlassian.jira.permission.GlobalPermissionKey;
-import com.tse.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
+import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
-import com.tse.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
-import com.tse.jira.ldapgroupsync.plugin.model.MessageBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,11 +31,18 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
             LOGGER.debug("Runing Sync -> "+ ldapGroup + " : "+ jiraGroup);
             if(ldapGroup != null && !"".equals(ldapGroup) && jiraGroup != null && !"".equals(jiraGroup)) {
                 status = "Running.";
+                long startTime = System.currentTimeMillis();
+                
                 MessageBean result = MyLdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
+                
+                long totalTime = System.currentTimeMillis() - startTime;                
+                LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+                
+                result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
                 status = result.getMessage();
             } else {
                 status = "Failed. Required fields are missing!";
-            }                       
+            }
         }
         return "success";
     }

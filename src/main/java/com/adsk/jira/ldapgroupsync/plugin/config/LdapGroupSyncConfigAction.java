@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tse.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.config;
 
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
-import com.tse.jira.ldapgroupsync.plugin.model.LdapGroupSyncConfigBean;
-import com.tse.jira.ldapgroupsync.plugin.svc.MyLdapUtils;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncConfigBean;
+import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -47,6 +47,7 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
             String USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
             String BASE_DN = configBean.getBase_dn();
             String USER_ATTR = configBean.getUser_attr();
+            String IS_NESTED = configBean.getIsNested();
             
             LOGGER.debug("LDAP URL -> "+ LDAP_URL);
             LOGGER.debug("SECURITY PRINCIPAL -> "+ SECURITY_PRINCIPAL);
@@ -55,6 +56,7 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
             LOGGER.debug("BASE DN -> "+ BASE_DN);
             LOGGER.debug("USER MEMBER SEARCH FILTER -> "+ USER_MEMBER_SEARCH_FILTER);
             LOGGER.debug("USER ATTR -> "+ USER_ATTR);
+            LOGGER.debug("IS NESTED -> "+ IS_NESTED);
             
             if( LDAP_URL != null && !"".equals(LDAP_URL) && SECURITY_PRINCIPAL != null && !"".equals(SECURITY_PRINCIPAL) 
                     && SECURITY_PASSWORD != null && !"".equals(SECURITY_PASSWORD) && BASE_DN != null && !"".equals(BASE_DN) ) {
@@ -68,7 +70,7 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
                 if(USER_MEMBER_SEARCH_FILTER != null && !"".equals(USER_MEMBER_SEARCH_FILTER)) {
                     MyLdapUtils.USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
                 } else {
-                    MyLdapUtils.USER_MEMBER_SEARCH_FILTER = "(&(objectClass=person)(memberOf={0}))"; //default
+                    MyLdapUtils.USER_MEMBER_SEARCH_FILTER = "(&(objectClass=user)(memberOf={0}))"; //default
                 }
                 
                 if(GROUP_SEARCH_FILTER != null && !"".equals(GROUP_SEARCH_FILTER)) { 
@@ -87,6 +89,12 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
                     MyLdapUtils.USER_ATTR = configBean.getUser_attr();
                 } else {
                     MyLdapUtils.USER_ATTR = "sAMAccountName"; //default
+                }
+                
+                if(IS_NESTED != null && !"".equals(IS_NESTED)) {
+                    MyLdapUtils.IS_NESTED = configBean.getIsNested();
+                } else {
+                    MyLdapUtils.IS_NESTED = "FALSE"; //default
                 }
                 
                 MyLdapUtils.destroyLdapContext(); //to pick latest config
@@ -149,6 +157,14 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
 
     public void setGroupMemberSearch_filter(String search_filter) {
         configBean.setGroupMemberSearch_filter(search_filter);
+    }
+    
+    public String getIsNested() {
+        return configBean.getIsNested();
+    }
+
+    public void setIsNested(String isNested) {
+        configBean.setIsNested(isNested);
     }
     
     public String getBase_dn() {

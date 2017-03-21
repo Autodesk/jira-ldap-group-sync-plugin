@@ -1,4 +1,4 @@
-package com.tse.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.configurable.ObjectConfiguration;
 import com.atlassian.configurable.ObjectConfigurationException;
@@ -33,7 +33,7 @@ public class MyLdapGroupSync extends AbstractService
         }
         
         long totalTime = System.currentTimeMillis() - startTime;
-        LOGGER.info("Service Finish. "+ totalTime/ 1000d +" Seconds");
+        LOGGER.info("Service Finished. Took "+ totalTime/ 1000d +" Seconds");
     }
     
     @Override

@@ -1,4 +1,4 @@
-package com.tse.jira.ldapgroupsync.plugin.model;
+package com.adsk.jira.ldapgroupsync.plugin.model;
 
 public class LdapGroupSyncMapBean {
     private String groups_map; 

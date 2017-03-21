@@ -1,6 +1,6 @@
-package com.tse.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.config;
 
-import com.tse.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 
 /**

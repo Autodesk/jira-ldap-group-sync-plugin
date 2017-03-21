@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tse.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
-import com.tse.jira.ldapgroupsync.plugin.config.LdapGroupSyncConfigMgr;
+import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncConfigMgr;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,6 +42,7 @@ public class MyLdapUtils {
     public static String GROUP_MEMBER_SEARCH_FILTER = null;
     public static String USER_MEMBER_SEARCH_FILTER = null;    
     public static String USER_ATTR = null;
+    public static String IS_NESTED = null;
     
     private MyLdapUtils() {
         ApplicationProperties props = ComponentAccessor.getApplicationProperties();
@@ -53,17 +54,21 @@ public class MyLdapUtils {
         USER_MEMBER_SEARCH_FILTER = props.getString(LdapGroupSyncConfigMgr.USER_MEMBER_SEARCH_FILTER);
         GROUP_MEMBER_SEARCH_FILTER = props.getString(LdapGroupSyncConfigMgr.GROUP_MEMBER_SEARCH_FILTER);
         USER_ATTR = props.getString(LdapGroupSyncConfigMgr.USER_ATTR);
+        IS_NESTED = props.getString(LdapGroupSyncConfigMgr.IS_NESTED);
         if(GROUP_SEARCH_FILTER == null || "".equals(GROUP_SEARCH_FILTER)) { //default values
             GROUP_SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))";
         }
         if( USER_MEMBER_SEARCH_FILTER == null || "".equals(USER_MEMBER_SEARCH_FILTER) ) {
-            USER_MEMBER_SEARCH_FILTER = "(&(objectClass=person)(memeberOf={0}))";
+            USER_MEMBER_SEARCH_FILTER = "(&(objectClass=user)(memberOf={0}))";
         }
         if( GROUP_MEMBER_SEARCH_FILTER == null || "".equals(GROUP_MEMBER_SEARCH_FILTER) ) {
-            GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memeberOf={0}))";
+            GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memberOf={0}))";
         }
         if( USER_ATTR == null || "".equals(USER_ATTR) ) {
             USER_ATTR = "sAMAccountName";
+        }
+        if( IS_NESTED == null || "".equals(IS_NESTED) ) {
+            IS_NESTED = "FALSE";
         }
     }
     
@@ -76,10 +81,7 @@ public class MyLdapUtils {
     
     private static List<String> getUsersInGroup(LdapContext ctx, String groupName) {
         List<String> users = new ArrayList<String>();
-        try {
-            SearchControls searchCtls = new SearchControls();
-            searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            
+        try {            
             String searchFilter = MessageFormat.format(USER_MEMBER_SEARCH_FILTER, groupName);
             
             NamingEnumeration answer = ctx.search(BASE_DN, searchFilter, getMemberSearchControls());
@@ -98,7 +100,7 @@ public class MyLdapUtils {
                 }
             }
         } catch (NamingException e) {
-            e.getLocalizedMessage();
+            LOGGER.error(e.getLocalizedMessage());
         }
         return users;
     }   
@@ -141,12 +143,14 @@ public class MyLdapUtils {
                     }
                     
                     // support nested groups
-                    List<String> groups = getNestedGroups(ctx, sr.getNameInNamespace());
-                    if(groups != null) {
-                        for(String group : groups) {
-                            List<String> nested_user_list = getUsersInGroup(ctx, group);
-                            if(nested_user_list != null) {
-                                users.addAll(nested_user_list);
+                    if("TRUE".equalsIgnoreCase(IS_NESTED)) {
+                        List<String> groups = getNestedGroups(ctx, sr.getNameInNamespace());
+                        if(groups != null) {
+                            for(String group : groups) {
+                                List<String> nested_user_list = getUsersInGroup(ctx, group);
+                                if(nested_user_list != null) {
+                                    users.addAll(nested_user_list);
+                                }
                             }
                         }
                     }

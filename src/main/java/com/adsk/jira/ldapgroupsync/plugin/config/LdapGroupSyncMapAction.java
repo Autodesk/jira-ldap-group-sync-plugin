@@ -1,8 +1,8 @@
-package com.tse.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.config;
 
 import com.atlassian.jira.permission.GlobalPermissionKey;
-import com.tse.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
-import com.tse.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
+import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
