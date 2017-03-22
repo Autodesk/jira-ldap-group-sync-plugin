@@ -125,7 +125,7 @@ public class MyLdapUtils {
     }
     
     public Set<String> getGroupMembers(String groupName) {        
-        Set<String> users = new HashSet<String>();
+        Set<String> users = null;
         LdapContext ctx = getLdapContext();
         try {
             if( ctx != null ) {
@@ -136,6 +136,8 @@ public class MyLdapUtils {
                 if (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult)answer.next();                
                     LOGGER.debug(">>>" + sr.getNameInNamespace());
+                    
+                    users = new HashSet<String>(); // create set object
                     
                     List<String> new_users_list = getUsersInGroup(ctx, sr.getNameInNamespace());
                     if(new_users_list != null) {
