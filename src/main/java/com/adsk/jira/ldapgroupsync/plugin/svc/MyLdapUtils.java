@@ -140,14 +140,14 @@ public class MyLdapUtils {
                     users = new HashSet<String>(); // create set object
                     
                     List<String> new_users_list = getUsersInGroup(ctx, sr.getNameInNamespace());
-                    if(new_users_list != null) {
+                    if(new_users_list.size() > 0) {
                         users.addAll(new_users_list);
                     }
                     
                     // support nested groups
                     if("TRUE".equalsIgnoreCase(IS_NESTED)) {
                         List<String> groups = getNestedGroups(ctx, sr.getNameInNamespace());
-                        if(groups != null) {
+                        if(groups.size() > 0) {
                             for(String group : groups) {
                                 List<String> nested_user_list = getUsersInGroup(ctx, group);
                                 if(nested_user_list != null) {
