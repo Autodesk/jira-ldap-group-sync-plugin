@@ -150,7 +150,7 @@ public class MyLdapUtils {
                         if(groups.size() > 0) {
                             for(String group : groups) {
                                 List<String> nested_user_list = getUsersInGroup(ctx, group);
-                                if(nested_user_list != null) {
+                                if(nested_user_list.size() > 0) {
                                     users.addAll(nested_user_list);
                                 }
                             }
