@@ -9,6 +9,6 @@ public class LdapGroupSyncMapBean {
 
     public void setGroups_map(String groups_map) {
         this.groups_map = groups_map;
-    }
+    }     
     
 }

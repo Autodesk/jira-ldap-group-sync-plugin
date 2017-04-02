@@ -1,12 +1,10 @@
 package com.adsk.jira.ldapgroupsync.plugin.config;
 
+import com.adsk.jira.ldapgroupsync.plugin.ao.LdapGroupSyncMap;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
 import com.atlassian.jira.permission.GlobalPermissionKey;
-import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
-import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import java.util.Map;
+import java.text.MessageFormat;
 import org.apache.log4j.Logger;
 
 /**
@@ -16,9 +14,10 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncMapAction.class);
-    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;
-    private LdapGroupSyncMapBean configBean = new LdapGroupSyncMapBean();
+    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;    
+    private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();    
     private String submitted;
+    private String mapId;
     private String status;
     
     public LdapGroupSyncMapAction(LdapGroupSyncMapMgr ldapGroupSyncMgr) {
@@ -30,38 +29,66 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
         if ( !hasGlobalPermission(GlobalPermissionKey.ADMINISTER) ) {
             return "error";
         }
-        if (this.submitted == null) {            
-            configBean = ldapGroupSyncMgr.getGroupsMapProperties();            
-        } else {
-            LOGGER.debug("Saving groups map -> "+ configBean.getGroups_map());            
-            try {
-                if(configBean.getGroups_map() != null && !"".equals(configBean.getGroups_map())) {
-                    Gson g = new Gson();        
-                    Map map = g.fromJson(configBean.getGroups_map(), Map.class);
-                    if( map instanceof Map ) {
-                        ldapGroupSyncMgr.setGroupsMapProperties(configBean);
-                        MyLdapGroupSyncDAO.ldapGroupSyncMap = configBean.getGroups_map();
-                        status = "Saved.";
-                    }
-                }else{
-                    ldapGroupSyncMgr.setGroupsMapProperties(configBean);
-                    MyLdapGroupSyncDAO.ldapGroupSyncMap = "{}";
+        if (this.submitted != null && "ADD".equals(this.submitted)) {            
+            LOGGER.debug("Saving groups map -> "+ configBean.getLdapGroup() +":"+configBean.getJiraGroup());
+            if(ldapGroupSyncMgr.findGroupsMapProperty(configBean) == false) {
+                if(configBean.getLdapGroup() != null && !"".equals(configBean.getLdapGroup()) 
+                        && configBean.getJiraGroup() !=null && !"".equals(configBean.getJiraGroup())) {
+                    ldapGroupSyncMgr.setGroupsMapProperty(configBean);
                     status = "Saved.";
+                }else{
+                    status = "Ldap/Jira Group field missing!";
                 }
-            } catch (JsonSyntaxException e) {
-                status = "Failed. "+e.getLocalizedMessage();
+            }else{
+                status = MessageFormat.format("{0}/{1} Group alredy exists in mapping!",
+                        configBean.getLdapGroup(), configBean.getJiraGroup());
+            }
+        }
+        if (this.submitted != null && "DEL".equals(this.submitted)) {
+            LOGGER.debug("Deleting groups map Id -> "+ mapId);
+            try {
+                long id = Long.parseLong(mapId);
+                if(id > 0) {
+                    ldapGroupSyncMgr.removeGroupsMapProperty(id);
+                    status = "Deleted.";
+                }else{
+                    status = "MapId "+id+" is not accepted!";
+                }
+            }catch (NumberFormatException e) {
+                LOGGER.error("Map ID can be only Number");
+                status = "Map ID can be only Number!";
             }            
         }
         return "success";
     }
+    
+    public String getMapId() {
+        return mapId;
+    }
 
-    public String getGroups_map() {
-        return configBean.getGroups_map();
+    public void setMapId(String mapId) {
+        this.mapId = mapId;
     }
     
-    public void setGroups_map(String groups_map) {
-        configBean.setGroups_map(groups_map);
-    }    
+    public String getLdapGroup() {
+        return configBean.getLdapGroup();
+    }
+
+    public void setLdapGroup(String ldapGroup) {
+        configBean.setLdapGroup(ldapGroup);
+    }
+
+    public String getJiraGroup() {
+        return configBean.getJiraGroup();
+    }
+
+    public void setJiraGroup(String jiraGroup) {
+        configBean.setJiraGroup(jiraGroup);
+    }
+    
+    public LdapGroupSyncMap[] getMapsList() {
+        return ldapGroupSyncMgr.getGroupsMapProperties();
+    }
     
     public void setSubmitted(String submitted) {
         this.submitted = submitted;

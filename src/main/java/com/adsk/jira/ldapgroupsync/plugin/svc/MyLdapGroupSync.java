@@ -1,5 +1,8 @@
 package com.adsk.jira.ldapgroupsync.plugin.svc;
 
+import com.adsk.jira.ldapgroupsync.plugin.ao.LdapGroupSyncMap;
+import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
+import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import com.atlassian.configurable.ObjectConfiguration;
 import com.atlassian.configurable.ObjectConfigurationException;
 import com.atlassian.jira.service.AbstractService;
@@ -13,6 +16,11 @@ public class MyLdapGroupSync extends AbstractService
     // Map strings for listener properties
     public static final String IS_ACTIVE = "is_active";
     private boolean is_active = false;
+    
+    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;
+    private MyLdapGroupSync(LdapGroupSyncMapMgr ldapGroupSyncMgr) {
+        this.ldapGroupSyncMgr = ldapGroupSyncMgr;
+    }
     
     @Override
     public void init(PropertySet props) throws ObjectConfigurationException {
@@ -29,7 +37,14 @@ public class MyLdapGroupSync extends AbstractService
         LOGGER.info("LDAP Group(s) Sync Service Started.");
         
         if(is_active == true) {
-            MyLdapGroupSyncDAO.getInstance().run();
+            
+            LdapGroupSyncMap[] maps = ldapGroupSyncMgr.getGroupsMapProperties();
+            for(LdapGroupSyncMap m : maps) {
+                MessageBean message = MyLdapGroupSyncDAO.getInstance()
+                        .sync(m.getLdapGroup(), m.getJiraGroup()); //Do Sync Here.
+                LOGGER.debug(message.getMessage());
+            }
+            
         }
         
         long totalTime = System.currentTimeMillis() - startTime;

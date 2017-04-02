@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.adsk.jira.ldapgroupsync.plugin</groupId>
     <artifactId>jira-ldap-group-sync-plugin</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
     <developers>
         <developer> 
             <name>Venkat Prasad</name> 
@@ -49,6 +49,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.2.2-atlassian-1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.activeobjects</groupId>
+            <artifactId>activeobjects-plugin</artifactId>
+            <version>${ao.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -103,6 +109,7 @@
     <properties>
         <jira.version>7.2.2</jira.version>
         <amps.version>6.2.11</amps.version>
+        <ao.version>0.19.16</ao.version>
         <plugin.testrunner.version>1.2.3</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->

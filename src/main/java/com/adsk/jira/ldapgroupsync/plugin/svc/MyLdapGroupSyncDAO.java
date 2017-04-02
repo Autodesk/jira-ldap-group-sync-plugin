@@ -2,9 +2,7 @@ package com.adsk.jira.ldapgroupsync.plugin.svc;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
-import com.google.gson.Gson;
 import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
@@ -35,22 +33,7 @@ public class MyLdapGroupSyncDAO
             myLdapGroupSyncDAO = new MyLdapGroupSyncDAO();
         }
         return myLdapGroupSyncDAO;
-    }
-    
-    private static Map getGsonMap(String maps) {
-        Gson g = new Gson();        
-        return g.fromJson(maps, Map.class);
-    }
-    
-    public void run() {
-        Map groups_map = getGsonMap(ldapGroupSyncMap);
-        for(Object key : groups_map.keySet()) {
-            String ldap_group = key.toString();
-            String jira_group = groups_map.get(key).toString();            
-            MessageBean message = sync(ldap_group, jira_group); //Do Sync Here.
-            LOGGER.debug(message.getMessage());
-        }
-    }
+    }        
     
     public MessageBean sync(String ldap_group, String jira_group) {
         

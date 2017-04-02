@@ -42,6 +42,15 @@
         <context>$i18n.getText("jira-ldap-group-sync-plugin-resources.context")</context>
     </web-resource>
     
+    <!-- Active Objects -->
+    <component-import key="ao" name="Active Objects service" interface="com.atlassian.activeobjects.external.ActiveObjects">
+      <description>Component to access Active Objects service</description>
+    </component-import>
+    <ao key="jira-ldap-group-sync-ao">
+      <description>AO interface for storing AJP entities</description>
+      <entity>com.adsk.jira.ldapgroupsync.plugin.ao.LdapGroupSyncMap</entity>
+    </ao>
+    
     <!-- Web Options panel -->
     <web-section key="jira-ldap-group-sync-section" name="LDAP Group(s) Sync" location="admin_plugins_menu" i18n-name-key="jira-ldap-group-sync.section" weight="20" application="jira">
         <label key="jira.ldap.group.sync.section.label" />
