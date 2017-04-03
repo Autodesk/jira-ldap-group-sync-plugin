@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.adsk.jira.ldapgroupsync.plugin</groupId>
     <artifactId>jira-ldap-group-sync-plugin</artifactId>
-    <version>3.0</version>
+    <version>4.0</version>
     <developers>
         <developer> 
             <name>Venkat Prasad</name> 

@@ -22,6 +22,10 @@
                 class="com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgrImpl">
         <interface>com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr</interface>
     </component>
+    <component key="jira-ldap-group-sync-map-ao-manager" name="LDAP Group(s) Sync Map AO Manager" 
+               class="com.adsk.jira.ldapgroupsync.plugin.ao.LdapGroupSyncAOMgrImpl" public="true">
+        <interface>com.adsk.jira.ldapgroupsync.plugin.ao.LdapGroupSyncAOMgr</interface>
+    </component>
     
     <component-import key="userManager" i18n-name-key="userManager.name">
           <description key="userManager.description" />

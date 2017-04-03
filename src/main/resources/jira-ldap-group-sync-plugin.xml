@@ -7,12 +7,5 @@ and open the template in the editor.
 
 
 <root id="AsdkMyLdapSyncService0001">
-    <description>JIRA Win Groups Sync Service</description>
-    <properties>
-        <property>
-            <key>is_active</key>
-            <name>Is Active: </name>
-            <type>string</type>
-        </property>
-    </properties>
+    <description>LDAP Groups Sync for JIRA Service</description>
 </root>

@@ -43,6 +43,7 @@ public class LdapGroupSyncMapMgrImpl implements LdapGroupSyncMapMgr {
         return maps.length > 0;
     }
 
+    @Override
     public void removeGroupsMapProperty(long mapId) {
         final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, Query.select().where("ID = ?", mapId));
         if(maps.length > 0) {
@@ -50,6 +51,7 @@ public class LdapGroupSyncMapMgrImpl implements LdapGroupSyncMapMgr {
         }
     }
 
+    @Override
     public boolean isJiraGroupNotInSupport(String jiraGroup) {
         final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, Query.select()
                 .where("JIRA_GROUP = ? AND SUPPORT = ?", jiraGroup, false));
