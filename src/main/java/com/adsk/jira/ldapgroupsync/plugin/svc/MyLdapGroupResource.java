@@ -5,12 +5,15 @@
  */
 package com.adsk.jira.ldapgroupsync.plugin.svc;
 
+import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.user.ApplicationUser;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
+import java.util.HashSet;
+import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,10 +32,19 @@ public class MyLdapGroupResource {
     private static final Logger LOGGER = Logger.getLogger(MyLdapGroupResource.class);
     private final JiraAuthenticationContext jiraAuthenticationContext;
     private GlobalPermissionManager permissionManager = null;
+    private static Set<String> defaultJiraGroups = null;
+    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;
     
-    public MyLdapGroupResource(JiraAuthenticationContext jiraAuthenticationContext, GlobalPermissionManager permissionManager) {
+    public MyLdapGroupResource(JiraAuthenticationContext jiraAuthenticationContext, 
+            GlobalPermissionManager permissionManager, LdapGroupSyncMapMgr ldapGroupSyncMgr) {
         this.jiraAuthenticationContext = jiraAuthenticationContext;
         this.permissionManager = permissionManager;
+        this.ldapGroupSyncMgr = ldapGroupSyncMgr;
+        defaultJiraGroups = new HashSet<String>();
+        defaultJiraGroups.add("jira-users");
+        defaultJiraGroups.add("jira-administrators");
+        defaultJiraGroups.add("jira-software-users");
+        defaultJiraGroups.add("jira-developers");
     }
     
     @POST
@@ -61,7 +73,17 @@ public class MyLdapGroupResource {
                 || syncBean.getJiraGroup() == null || "".equals(syncBean.getJiraGroup()) ) {
             messageBean.setMessage("[Error] Required fields are missing.");
             return Response.status(Response.Status.BAD_REQUEST).entity(messageBean).build();
-        }                
+        }
+        
+        if(defaultJiraGroups.contains(syncBean.getJiraGroup().toLowerCase()) ) { //skip not supported
+            messageBean.setMessage("This plugin does not support JIRA default group ("+syncBean.getJiraGroup()+"). Skipping!");
+            return Response.ok(messageBean).build();
+        }
+        
+        if(ldapGroupSyncMgr.isJiraGroupNotInSupport(syncBean.getJiraGroup()) == true) { //skip not supported
+            messageBean.setMessage("This JIRA group ("+syncBean.getJiraGroup()+") is mapped not to support. Skipping!");
+            return Response.ok(messageBean).build();
+        }
         
         MyLdapGroupSyncDAO syncDAO = MyLdapGroupSyncDAO.getInstance();
         MessageBean result = syncDAO.sync(syncBean.getLdapGroup(), syncBean.getJiraGroup());

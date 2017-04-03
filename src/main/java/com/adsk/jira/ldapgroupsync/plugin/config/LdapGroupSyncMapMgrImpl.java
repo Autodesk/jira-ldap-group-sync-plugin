@@ -49,5 +49,11 @@ public class LdapGroupSyncMapMgrImpl implements LdapGroupSyncMapMgr {
             ao.delete(maps[0]);
         }
     }
+
+    public boolean isJiraGroupNotInSupport(String jiraGroup) {
+        final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, Query.select()
+                .where("JIRA_GROUP = ? AND SUPPORT = ?", jiraGroup, false));
+        return maps.length > 0;
+    }
     
 }

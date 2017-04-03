@@ -12,5 +12,6 @@ public abstract interface LdapGroupSyncMapMgr {
     public abstract LdapGroupSyncMap[] getSupportedGroupsMapProperties();
     public abstract void setGroupsMapProperty(LdapGroupSyncMapBean configBean);
     public abstract boolean findGroupsMapProperty(LdapGroupSyncMapBean configBean);
+    public abstract boolean isJiraGroupNotInSupport(String jiraGroup);
     public abstract void removeGroupsMapProperty(long mapId);
 }

@@ -5,6 +5,8 @@ import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.log4j.Logger;
 
 /**
@@ -14,15 +16,20 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
     
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncRunAction.class);
-    private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();
-    private final String[] not_supported = new String[] {
-        "jira-users",
-        "jira-developers",
-        "jira-administrators",
-        "jira-software-users"
-    };
+    private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();    
     private String submitted;
     private String status;
+    
+    private static Set<String> defaultJiraGroups = null;
+    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;
+    private LdapGroupSyncRunAction(LdapGroupSyncMapMgr ldapGroupSyncMgr) {
+        this.ldapGroupSyncMgr = ldapGroupSyncMgr;
+        defaultJiraGroups = new HashSet<String>();
+        defaultJiraGroups.add("jira-users");
+        defaultJiraGroups.add("jira-administrators");
+        defaultJiraGroups.add("jira-software-users");
+        defaultJiraGroups.add("jira-developers");
+    }
     
     @Override
     public String doExecute() throws Exception {
@@ -34,18 +41,24 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
             String jiraGroup = configBean.getJiraGroup();
             LOGGER.debug("Runing Sync -> "+ ldapGroup + " : "+ jiraGroup);
             if(ldapGroup != null && !"".equals(ldapGroup) && jiraGroup != null && !"".equals(jiraGroup)) {
-                //if(not_supported) {
-                status = "Running.";
-                long startTime = System.currentTimeMillis();
-                
-                MessageBean result = MyLdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
-                
-                long totalTime = System.currentTimeMillis() - startTime;                
-                LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
-                
-                result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
-                status = result.getMessage();
-                //}
+                if(!defaultJiraGroups.contains(jiraGroup.toLowerCase()) ) {
+                    if(ldapGroupSyncMgr.isJiraGroupNotInSupport(jiraGroup) == true) {
+                        status = "This JIRA group ("+jiraGroup+") is mapped not to support. Skipping!";
+                    }else{
+                        status = "Running.";
+                        long startTime = System.currentTimeMillis();
+
+                        MessageBean result = MyLdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
+
+                        long totalTime = System.currentTimeMillis() - startTime;                
+                        LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+
+                        result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+                        status = result.getMessage();                        
+                    }
+                }else{
+                    status = "This plugin does not support JIRA default group ("+jiraGroup+"). Skipping!";
+                }
             } else {
                 status = "Failed. Required fields are missing!";
             }
