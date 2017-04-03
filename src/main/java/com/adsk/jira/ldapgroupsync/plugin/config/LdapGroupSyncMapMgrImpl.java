@@ -18,9 +18,13 @@ public class LdapGroupSyncMapMgrImpl implements LdapGroupSyncMapMgr {
     }
     
     @Override
-    public LdapGroupSyncMap[] getGroupsMapProperties() {        
-        final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, Query.select());
-        return maps;
+    public LdapGroupSyncMap[] getAllGroupsMapProperties() {        
+        return ao.find(LdapGroupSyncMap.class, Query.select());
+    }
+    
+    @Override
+    public LdapGroupSyncMap[] getSupportedGroupsMapProperties() {
+        return ao.find(LdapGroupSyncMap.class, Query.select().where("SUPPORT = ?", true));
     }
 
     @Override

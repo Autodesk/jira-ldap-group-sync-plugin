@@ -95,7 +95,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     }
     
     public LdapGroupSyncMap[] getMapsList() {
-        return ldapGroupSyncMgr.getGroupsMapProperties();
+        return ldapGroupSyncMgr.getAllGroupsMapProperties();
     }
     
     public void setSubmitted(String submitted) {

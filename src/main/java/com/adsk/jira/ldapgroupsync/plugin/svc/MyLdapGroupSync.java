@@ -38,7 +38,7 @@ public class MyLdapGroupSync extends AbstractService
         
         if(is_active == true) {
             
-            LdapGroupSyncMap[] maps = ldapGroupSyncMgr.getGroupsMapProperties();
+            LdapGroupSyncMap[] maps = ldapGroupSyncMgr.getSupportedGroupsMapProperties();
             for(LdapGroupSyncMap m : maps) {
                 MessageBean message = MyLdapGroupSyncDAO.getInstance()
                         .sync(m.getLdapGroup(), m.getJiraGroup()); //Do Sync Here.
