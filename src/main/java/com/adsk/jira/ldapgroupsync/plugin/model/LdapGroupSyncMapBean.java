@@ -1,14 +1,31 @@
 package com.adsk.jira.ldapgroupsync.plugin.model;
 
 public class LdapGroupSyncMapBean {
-    private String groups_map; 
+    private String ldapGroup;
+    private String jiraGroup;
+    private boolean support;
 
-    public String getGroups_map() {
-        return groups_map;
+    public String getLdapGroup() {
+        return ldapGroup;
     }
 
-    public void setGroups_map(String groups_map) {
-        this.groups_map = groups_map;
-    }     
-    
+    public void setLdapGroup(String ldapGroup) {
+        this.ldapGroup = ldapGroup;
+    }
+
+    public String getJiraGroup() {
+        return jiraGroup;
+    }
+
+    public void setJiraGroup(String jiraGroup) {
+        this.jiraGroup = jiraGroup;
+    }
+
+    public boolean isSupport() {
+        return support;
+    }
+
+    public void setSupport(boolean support) {
+        this.support = support;
+    }        
 }

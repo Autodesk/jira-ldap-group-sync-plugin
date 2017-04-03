@@ -1,10 +1,7 @@
 package com.adsk.jira.ldapgroupsync.plugin.svc;
 
-import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.config.properties.ApplicationProperties;
 import java.util.List;
 import org.apache.log4j.Logger;
-import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,11 +13,7 @@ public class MyLdapGroupSyncDAO
     private static Set<String> defaultJiraGroups = null;
     public static String ldapGroupSyncMap = null;
     
-    private MyLdapGroupSyncDAO() {
-        ApplicationProperties props = ComponentAccessor.getApplicationProperties();
-        ldapGroupSyncMap = props.getString(LdapGroupSyncMapMgr.GROUPS_MAP);
-        if( ldapGroupSyncMap == null || "".equals(ldapGroupSyncMap) ) ldapGroupSyncMap = "{}"; //default
-        //default jira groups to skip
+    private MyLdapGroupSyncDAO() { //default jira groups to skip        
         defaultJiraGroups = new HashSet<String>();
         defaultJiraGroups.add("jira-users");
         defaultJiraGroups.add("jira-administrators");

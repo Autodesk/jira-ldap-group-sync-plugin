@@ -1,7 +1,7 @@
 package com.adsk.jira.ldapgroupsync.plugin.config;
 
 import com.adsk.jira.ldapgroupsync.plugin.ao.LdapGroupSyncMap;
-import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import java.text.MessageFormat;
@@ -15,7 +15,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncMapAction.class);
     private final LdapGroupSyncMapMgr ldapGroupSyncMgr;    
-    private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();    
+    private final LdapGroupSyncMapBean configBean = new LdapGroupSyncMapBean();    
     private String submitted;
     private String mapId;
     private String status;
@@ -30,7 +30,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
             return "error";
         }
         if (this.submitted != null && "ADD".equals(this.submitted)) {            
-            LOGGER.debug("Saving groups map -> "+ configBean.getLdapGroup() +":"+configBean.getJiraGroup());
+            LOGGER.debug("Saving groups map -> "+ configBean.getLdapGroup() +":"+configBean.getJiraGroup()+":"+ configBean.isSupport());
             if(ldapGroupSyncMgr.findGroupsMapProperty(configBean) == false) {
                 if(configBean.getLdapGroup() != null && !"".equals(configBean.getLdapGroup()) 
                         && configBean.getJiraGroup() !=null && !"".equals(configBean.getJiraGroup())) {
@@ -40,7 +40,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                     status = "Ldap/Jira Group field missing!";
                 }
             }else{
-                status = MessageFormat.format("{0}/{1} Group alredy exists in mapping!",
+                status = MessageFormat.format("{0} or {1} Group alredy exists in mapping!",
                         configBean.getLdapGroup(), configBean.getJiraGroup());
             }
         }
@@ -54,10 +54,10 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                 }else{
                     status = "MapId "+id+" is not accepted!";
                 }
-            }catch (NumberFormatException e) {
-                LOGGER.error("Map ID can be only Number");
+            } catch (NumberFormatException e) {
+                LOGGER.error("Map ID can be only Number! "+ e.getLocalizedMessage());
                 status = "Map ID can be only Number!";
-            }            
+            }
         }
         return "success";
     }
@@ -84,6 +84,14 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
 
     public void setJiraGroup(String jiraGroup) {
         configBean.setJiraGroup(jiraGroup);
+    }
+    
+    public boolean isSupport() {
+        return configBean.isSupport();
+    }
+
+    public void setSupport(boolean support) {
+        configBean.setSupport(support);
     }
     
     public LdapGroupSyncMap[] getMapsList() {

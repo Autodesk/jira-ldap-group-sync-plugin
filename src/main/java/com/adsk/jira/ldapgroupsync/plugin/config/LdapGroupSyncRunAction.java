@@ -15,6 +15,12 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncRunAction.class);
     private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();
+    private final String[] not_supported = new String[] {
+        "jira-users",
+        "jira-developers",
+        "jira-administrators",
+        "jira-software-users"
+    };
     private String submitted;
     private String status;
     
@@ -23,13 +29,12 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
         if ( !hasGlobalPermission(GlobalPermissionKey.ADMINISTER) ) {
             return "error";
         }
-        if (this.submitted == null) {            
-            //configBean = ldapGroupSyncMgr.getGroupsRunProperties();             
-        } else {
+        if (this.submitted != null) {
             String ldapGroup = configBean.getLdapGroup();
             String jiraGroup = configBean.getJiraGroup();
             LOGGER.debug("Runing Sync -> "+ ldapGroup + " : "+ jiraGroup);
             if(ldapGroup != null && !"".equals(ldapGroup) && jiraGroup != null && !"".equals(jiraGroup)) {
+                //if(not_supported) {
                 status = "Running.";
                 long startTime = System.currentTimeMillis();
                 
@@ -40,6 +45,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
                 
                 result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
                 status = result.getMessage();
+                //}
             } else {
                 status = "Failed. Required fields are missing!";
             }
@@ -61,7 +67,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
 
     public void setJiraGroup(String jiraGroup) {
         configBean.setJiraGroup(jiraGroup);
-    }   
+    }
     
     public void setSubmitted(String submitted) {
         this.submitted = submitted;

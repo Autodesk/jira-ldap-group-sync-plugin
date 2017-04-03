@@ -30,7 +30,17 @@
     <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" />
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.jira_group.description")</div>
 </div>
-
+<div class="field-group">
+    <label for="support">
+        $i18n.getText("jira.ldap.group.configure.option.support.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <select id="support" name="support" class="text">
+        <option value="false">FALSE</option>
+        <option value="true">TRUE</option>
+    </select>
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.support.description")</div>
+</div>
 <div class="aui-buttons">
     <input class="aui-button" type="submit" name="submitted" value="ADD" />
 </div>
@@ -47,9 +57,9 @@
 
 <div id="ldapGroupMapDisplay">
 <table class="aui">
-    <tr><th>Mapping ID</th><th>LDAP Group Name</th><th>JIRA Group Name</th></tr>
+    <tr><th>Mapping ID</th><th>LDAP Group Name</th><th>JIRA Group Name</th><th>Supported?</th></tr>
     #foreach ($entry in $mapsList)
-        <tr><td>$entry.ID</td><td>$entry.ldapGroup</td><td>$entry.jiraGroup</td></tr>
+        <tr><td>$entry.ID</td><td>$entry.ldapGroup</td><td>$entry.jiraGroup</td><td>$entry.support</td></tr>
     #end
 <table>
 </div>

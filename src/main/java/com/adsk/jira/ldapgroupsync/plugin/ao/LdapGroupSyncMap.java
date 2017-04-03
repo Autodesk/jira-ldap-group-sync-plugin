@@ -19,4 +19,6 @@ public interface LdapGroupSyncMap extends Entity {
     public void setLdapGroup(String ldapGroup);    
     public String getJiraGroup();
     public void setJiraGroup(String jiraGroup);
+    public boolean getSupport();
+    public void setSupport(boolean support);
 }
