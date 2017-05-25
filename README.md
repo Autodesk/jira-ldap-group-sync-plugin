@@ -1,4 +1,4 @@
 # LDAP Group(s) Sync For JIRA Plugin
 
-[Documentation](/EngOps/jira-ldap-group-sync-plugin/wiki/Home)
-[Contrinutors](Contributing.md)
+* [Documentation](https://git.autodesk.com/EngOps/jira-ldap-group-sync-plugin/wiki/Home)
+* [Contrinutors](Contributing.md)
