@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.api;
 
-import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncMapMgr;
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncDAO;
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgr;
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgrImpl;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -13,8 +15,10 @@ import com.atlassian.jira.user.ApplicationUser;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,25 +31,50 @@ import org.apache.log4j.Logger;
  * @author prasadve
  */
 @Path("/run")
-public class MyLdapGroupResource {
+public class LdapGroupResource {
     
-    private static final Logger LOGGER = Logger.getLogger(MyLdapGroupResource.class);
+    private static final Logger LOGGER = Logger.getLogger(LdapGroupResource.class);
     private final JiraAuthenticationContext jiraAuthenticationContext;
     private GlobalPermissionManager permissionManager = null;
     private static Set<String> defaultJiraGroups = null;
-    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;
+    private final LdapGroupSyncAOMgr ldapGroupSyncMgr;
     
-    public MyLdapGroupResource(JiraAuthenticationContext jiraAuthenticationContext, 
-            GlobalPermissionManager permissionManager, LdapGroupSyncMapMgr ldapGroupSyncMgr) {
+    public LdapGroupResource(JiraAuthenticationContext jiraAuthenticationContext, 
+            GlobalPermissionManager permissionManager) {
         this.jiraAuthenticationContext = jiraAuthenticationContext;
         this.permissionManager = permissionManager;
-        this.ldapGroupSyncMgr = ldapGroupSyncMgr;
+        this.ldapGroupSyncMgr = LdapGroupSyncAOMgrImpl.getInstance();
         defaultJiraGroups = new HashSet<String>();
         defaultJiraGroups.add("jira-users");
         defaultJiraGroups.add("jira-administrators");
         defaultJiraGroups.add("jira-software-users");
         defaultJiraGroups.add("jira-developers");
     }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/get/configs")
+    public Response getLdapGroupSyncConfigs() {
+        long startTime = System.currentTimeMillis();
+        
+        ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
+        
+        LOGGER.debug("["+loggedInAppUser.getUsername() +"] Get Configs Started.");
+        
+        //check permissions
+        if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, loggedInAppUser) == false ) {
+            String authError = ("[Error] Permission denied. System admin access is required.");
+            return Response.status(Response.Status.FORBIDDEN).entity(authError).build();
+        }
+        
+        LdapGroupSyncAOMgr aoMgr = LdapGroupSyncAOMgrImpl.getInstance();
+        List results = aoMgr.getAllGroupsMapProperties();
+        
+        long totalTime = System.currentTimeMillis() - startTime;        
+        LOGGER.debug("["+loggedInAppUser.getUsername()+"] Get Config. Took "+ totalTime/ 1000d +" Seconds");
+        return Response.ok(results).build();
+    }
+    
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -85,7 +114,7 @@ public class MyLdapGroupResource {
             return Response.ok(messageBean).build();
         }
         
-        MyLdapGroupSyncDAO syncDAO = MyLdapGroupSyncDAO.getInstance();
+        LdapGroupSyncDAO syncDAO = LdapGroupSyncDAO.getInstance();
         MessageBean result = syncDAO.sync(syncBean.getLdapGroup(), syncBean.getJiraGroup());
         
         long totalTime = System.currentTimeMillis() - startTime;

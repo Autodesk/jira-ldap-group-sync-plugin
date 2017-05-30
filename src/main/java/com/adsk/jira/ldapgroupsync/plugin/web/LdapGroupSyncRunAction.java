@@ -1,7 +1,9 @@
-package com.adsk.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.web;
 
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgr;
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgrImpl;
 import com.atlassian.jira.permission.GlobalPermissionKey;
-import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapGroupSyncDAO;
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncDAO;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
@@ -21,9 +23,9 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
     private String status;
     
     private static Set<String> defaultJiraGroups = null;
-    private final LdapGroupSyncMapMgr ldapGroupSyncMgr;
-    private LdapGroupSyncRunAction(LdapGroupSyncMapMgr ldapGroupSyncMgr) {
-        this.ldapGroupSyncMgr = ldapGroupSyncMgr;
+    private final LdapGroupSyncAOMgr ldapGroupSyncMgr;
+    private LdapGroupSyncRunAction() {
+        this.ldapGroupSyncMgr = LdapGroupSyncAOMgrImpl.getInstance();
         defaultJiraGroups = new HashSet<String>();
         defaultJiraGroups.add("jira-users");
         defaultJiraGroups.add("jira-administrators");
@@ -48,7 +50,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
                         status = "Running.";
                         long startTime = System.currentTimeMillis();
 
-                        MessageBean result = MyLdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
+                        MessageBean result = LdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
 
                         long totalTime = System.currentTimeMillis() - startTime;                
                         LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");

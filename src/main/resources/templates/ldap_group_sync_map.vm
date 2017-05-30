@@ -1,0 +1,123 @@
+#disable_html_escaping()
+<html>
+<head>
+    <title>$i18n.getText("jira.ldap.group.sync.maps.option.label")</title>
+    <meta name="decorator" content="atl.admin" />
+    $webResourceManager.requireResource("com.adsk.jira.ldapgroupsync.plugin.jira-ldap-group-sync-plugin:jira-ldap-group-sync-plugin-resources")
+    <meta name="configId" content="$textutils.htmlEncode($action.configId)"/>
+    <script>
+        AJS.$(document).ready(function(){
+            if("$configId" != 0) {
+                AJS.$("#LdapGroupMapAddEdit").stop().slideDown();
+                AJS.$("#LdapGroupMapDel").stop().slideUp();
+                AJS.$("#LdapGroupMapAddEditForm input[name='submitted']").val("SAVE");
+                location.hash = "#LdapGroupMapAddEdit";
+            }
+        });
+        
+        function prepareHide() {
+            AJS.$("#LdapGroupMapAddEdit").stop().slideUp();
+        }
+        
+        function prepareDelete(configId) {
+            AJS.$("#LdapGroupMapDel").stop().slideDown();
+            AJS.$("#LdapGroupMapAddEdit").stop().slideUp();            
+            AJS.$("#LdapGroupMapDelForm input[name='configId']").val(configId);
+            location.hash = "#LdapGroupMapDel";
+        }
+    </script>
+</head>
+<body>
+
+<p>
+<span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.sync.maps.option.label")</span>
+<a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Home" target="_blank"
+    class="adskldapsync_question" title="LDAP Group Sync Plugin Documentation"></a>
+</p>
+
+<!-- options ADD -->
+
+<div id="LdapGroupMapAddEdit">
+<form id="LdapGroupMapAddEditForm" class="aui" method="post" action="LdapGroupSyncMapAction.jspa" >
+<input type="hidden" id="configId" name="configId" class="text" value="$!configId" />
+<div class="field-group">
+    <label for="ldap_group">
+        $i18n.getText("jira.ldap.group.configure.option.ldap_group.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
+        placeholder="Your LDAP Group Name" value="$!ldapGroup" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.ldap_group.description")</div>
+</div>
+<div class="field-group">
+    <label for="jira_group">
+        $i18n.getText("jira.ldap.group.configure.option.jira_group.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" 
+        placeholder="Your JIRA Group Name" value="$!jiraGroup" />
+</div>
+<div class="field-group">
+    <label for="support">
+        $i18n.getText("jira.ldap.group.configure.option.support.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <select id="support" name="support" class="text">
+        #foreach($a in ["true", "false"])
+        <option value="$a"
+            #if ($a == $support)selected#end
+        >$a.toUpperCase()</option>
+        #end
+    </select>
+</div>
+<div class="aui-buttons">
+    <input class="aui-button" type="submit" name="submitted" value="ADD" />
+</div>
+</form>
+</div>
+
+
+<!-- Delete Mapping ID -->
+<div id="LdapGroupMapDel" style="display: none;">
+<form id="LdapGroupMapDelForm" class="aui" method="post" action="LdapGroupSyncMapAction.jspa" >
+<div class="field-group">
+    <label for="configId">
+        $i18n.getText("jira.ldap.group.configure.option.configId.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="text" id="configId" name="configId" class="text" />
+    <input class="aui-button" type="submit" name="submitted" value="DEL" />
+</div>
+</form>
+</div>
+
+
+<!-- config status -->
+<p id="LdapGroupSyncStatus" style="background-color:#E0FFFF;">$!status</p>
+
+<span class="adskldapsyncconfig_count_span">LDAP Sync Maps &diams; <span id="adskldapsyncconfig_count">$configList.size()</span></span>
+<div class="adskldapsyncconfig_search_div">
+    <input type="text" id="adskldapsyncconfig_search" placeholder=" Search" onkeyup="adskldapsyncconfig_filter(this)" />
+</div>
+
+<!-- config display -->
+
+<div id="ldapGroupMapDisplay">
+<table id="adskldapsync_configs" class="aui">
+    <tr><th>Mapping ID</th><th>LDAP Group Name</th><th>JIRA Group Name</th><th>Active?</th><th></th></tr>
+    #foreach ($entry in $configList)
+        <tr><td>$entry.configId</td><td>$entry.ldapGroup</td><td>$entry.jiraGroup</td><td>$entry.support</td>
+        <td>            
+            <a class="adskldapsync_edit" title="Edit Map Configuration" href="#"
+                onClick="window.location.href='LdapGroupSyncMapAction.jspa?configId=$entry.configId'"></a>
+            <a class="adskldapsync_delete" href="#" title="Delete Config" 
+                onClick="prepareDelete('$entry.configId')"></a>
+        </td>        
+        </tr>
+    #end
+</table>
+</div>
+
+
+</body>
+</html>

@@ -1,31 +1,26 @@
-/**
- * method toggle for ci jobs div
- * @returns {undefined}
- */
-function doJobsToggle(scmId) {
-    AJS.$("#scmactivityjobdiv_"+scmId).stop().slideToggle();
-}
+function adskldapsyncconfig_filter(element) {
+  // Declare variables 
+  var count, input, filter, table, tr, td, i;
+  count = document.getElementById("adskldapsyncconfig_count");
+  input = document.getElementById("adskldapsyncconfig_search");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("adskldapsync_configs");
+  tr = table.getElementsByTagName("tr");
 
-function doJobsToggleCF(scmId) {
-    AJS.$("#scmactivityjobdivCF_"+scmId).stop().slideToggle();
-}
-
-function doJobsToggleCFC(scmId) {
-    AJS.$("#scmactivityjobdivCFC_"+scmId).stop().slideToggle();
-}
-
-/**
- * method toggle for affects div
- * @returns {undefined}
- */
-function doAffectsToggle(scmId) {
-    AJS.$("#scmactivityaffectdiv_"+scmId).stop().slideToggle();
-}
-
-function doAffectsToggleCF(scmId) {
-    AJS.$("#scmactivityaffectdivCF_"+scmId).stop().slideToggle();
-}
-
-function doAffectsToggleCFC(scmId) {
-    AJS.$("#scmactivityaffectdivCFC_"+scmId).stop().slideToggle();
+  // Loop through all table rows, and hide those who don't match the search query
+  var size = 0;
+  for (i = 0; i < tr.length; i++) {
+    td0 = tr[i].getElementsByTagName("td")[1];
+    td1 = tr[i].getElementsByTagName("td")[2];
+    if (td0 || td1) {
+      if (td0.innerHTML.toUpperCase().indexOf(filter) > -1 || 
+              td1.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+        size++;
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+  count.innerHTML = size;
 }

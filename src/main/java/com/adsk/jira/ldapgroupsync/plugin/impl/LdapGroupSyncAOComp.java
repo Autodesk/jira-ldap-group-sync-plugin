@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.ao;
+package com.adsk.jira.ldapgroupsync.plugin.impl;
 
 import com.atlassian.activeobjects.external.ActiveObjects;
 
@@ -11,8 +11,6 @@ import com.atlassian.activeobjects.external.ActiveObjects;
  *
  * @author prasadve
  */
-public interface LdapGroupSyncAOMgr {
+public interface LdapGroupSyncAOComp {
     public ActiveObjects getActiveObjects();
-    public LdapGroupSyncMap[] getSupportedGroupsMapProperties();
-    public boolean isJiraGroupNotInSupport(String jiraGroup);
 }

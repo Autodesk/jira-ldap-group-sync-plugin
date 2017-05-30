@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.web;
 
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncConfigBean;
 

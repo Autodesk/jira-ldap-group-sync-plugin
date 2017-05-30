@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.impl;
 
 import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.exception.OperationNotPermittedException;
@@ -24,17 +24,17 @@ import org.apache.log4j.Logger;
  *
  * @author prasadve
  */
-public class MyJiraUtils {
-    private static final Logger LOGGER = Logger.getLogger(MyJiraUtils.class);
-    private static MyJiraUtils myJiraUtils = null;        
+public class LdapGroupSyncJiraUtils {
+    private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncJiraUtils.class);
+    private static LdapGroupSyncJiraUtils myJiraUtils = null;        
     private final GroupManager groupManager = ComponentAccessor.getGroupManager();
     private final UserManager userManager = ComponentAccessor.getUserManager();
     private final UserUtil userUtil = ComponentAccessor.getUserUtil();
-    private MyJiraUtils() {}
+    private LdapGroupSyncJiraUtils() {}
     
-    public static MyJiraUtils getInstance() {
+    public static LdapGroupSyncJiraUtils getInstance() {
         if( myJiraUtils == null ) {
-            myJiraUtils = new MyJiraUtils();
+            myJiraUtils = new LdapGroupSyncJiraUtils();
         }
         return myJiraUtils;
     }

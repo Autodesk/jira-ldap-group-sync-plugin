@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.impl;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.config.properties.ApplicationProperties;
-import com.adsk.jira.ldapgroupsync.plugin.config.LdapGroupSyncConfigMgr;
+import com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigMgr;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,9 +29,9 @@ import org.apache.log4j.Logger;
  *
  * @author prasadve
  */
-public class MyLdapUtils {
-    private static final Logger LOGGER = Logger.getLogger(MyLdapUtils.class);
-    private static MyLdapUtils myLdapUtils = null;
+public class LdapGroupSyncLDAPUtils {
+    private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncLDAPUtils.class);
+    private static LdapGroupSyncLDAPUtils myLdapUtils = null;
     private static Properties properties = null;
     
     public static String LDAP_URL = null;
@@ -44,7 +44,7 @@ public class MyLdapUtils {
     public static String USER_ATTR = null;
     public static String IS_NESTED = null;
     
-    private MyLdapUtils() {
+    private LdapGroupSyncLDAPUtils() {
         ApplicationProperties props = ComponentAccessor.getApplicationProperties();
         LDAP_URL = props.getString(LdapGroupSyncConfigMgr.LDAP_URL);
         SECURITY_PRINCIPAL = props.getString(LdapGroupSyncConfigMgr.SECURITY_PRINCIPAL);
@@ -72,9 +72,9 @@ public class MyLdapUtils {
         }
     }
     
-    public static MyLdapUtils getInstance() {
+    public static LdapGroupSyncLDAPUtils getInstance() {
         if( myLdapUtils == null ) {
-            myLdapUtils = new MyLdapUtils();
+            myLdapUtils = new LdapGroupSyncLDAPUtils();
         }
         return myLdapUtils;
     }

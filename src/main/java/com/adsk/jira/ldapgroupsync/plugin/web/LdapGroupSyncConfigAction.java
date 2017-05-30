@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.config;
+package com.adsk.jira.ldapgroupsync.plugin.web;
 
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncConfigBean;
-import com.adsk.jira.ldapgroupsync.plugin.svc.MyLdapUtils;
+import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncLDAPUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -62,42 +62,42 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
                     && SECURITY_PASSWORD != null && !"".equals(SECURITY_PASSWORD) && BASE_DN != null && !"".equals(BASE_DN) ) {
                 ldapGroupSyncConfigMgr.setGroupsConfigProperties(configBean);
                 
-                MyLdapUtils.LDAP_URL = configBean.getLdap_url();
-                MyLdapUtils.SECURITY_PRINCIPAL = configBean.getSecurity_principal();
-                MyLdapUtils.SECURITY_PASSWORD = configBean.getSecurity_password();
-                MyLdapUtils.BASE_DN = configBean.getBase_dn();
+                LdapGroupSyncLDAPUtils.LDAP_URL = configBean.getLdap_url();
+                LdapGroupSyncLDAPUtils.SECURITY_PRINCIPAL = configBean.getSecurity_principal();
+                LdapGroupSyncLDAPUtils.SECURITY_PASSWORD = configBean.getSecurity_password();
+                LdapGroupSyncLDAPUtils.BASE_DN = configBean.getBase_dn();
                 
                 if(USER_MEMBER_SEARCH_FILTER != null && !"".equals(USER_MEMBER_SEARCH_FILTER)) {
-                    MyLdapUtils.USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
+                    LdapGroupSyncLDAPUtils.USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
                 } else {
-                    MyLdapUtils.USER_MEMBER_SEARCH_FILTER = "(&(objectClass=user)(memberOf={0}))"; //default
+                    LdapGroupSyncLDAPUtils.USER_MEMBER_SEARCH_FILTER = "(&(objectClass=user)(memberOf={0}))"; //default
                 }
                 
                 if(GROUP_SEARCH_FILTER != null && !"".equals(GROUP_SEARCH_FILTER)) { 
-                    MyLdapUtils.GROUP_SEARCH_FILTER = configBean.getGroupSearch_filter();
+                    LdapGroupSyncLDAPUtils.GROUP_SEARCH_FILTER = configBean.getGroupSearch_filter();
                 } else {
-                    MyLdapUtils.GROUP_SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))"; //default
+                    LdapGroupSyncLDAPUtils.GROUP_SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))"; //default
                 }
                 
                 if(GROUP_MEMBER_SEARCH_FILTER != null && !"".equals(GROUP_MEMBER_SEARCH_FILTER)) { 
-                    MyLdapUtils.GROUP_MEMBER_SEARCH_FILTER = configBean.getGroupMemberSearch_filter();
+                    LdapGroupSyncLDAPUtils.GROUP_MEMBER_SEARCH_FILTER = configBean.getGroupMemberSearch_filter();
                 } else {
-                    MyLdapUtils.GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memberOf={0}))"; //default
+                    LdapGroupSyncLDAPUtils.GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memberOf={0}))"; //default
                 }
                 
                 if(USER_ATTR != null && !"".equals(USER_ATTR)) {
-                    MyLdapUtils.USER_ATTR = configBean.getUser_attr();
+                    LdapGroupSyncLDAPUtils.USER_ATTR = configBean.getUser_attr();
                 } else {
-                    MyLdapUtils.USER_ATTR = "sAMAccountName"; //default
+                    LdapGroupSyncLDAPUtils.USER_ATTR = "sAMAccountName"; //default
                 }
                 
                 if(IS_NESTED != null && !"".equals(IS_NESTED)) {
-                    MyLdapUtils.IS_NESTED = configBean.getIsNested();
+                    LdapGroupSyncLDAPUtils.IS_NESTED = configBean.getIsNested();
                 } else {
-                    MyLdapUtils.IS_NESTED = "FALSE"; //default
+                    LdapGroupSyncLDAPUtils.IS_NESTED = "FALSE"; //default
                 }
                 
-                MyLdapUtils.destroyLdapContext(); //to pick latest config
+                LdapGroupSyncLDAPUtils.destroyLdapContext(); //to pick latest config
                 status = "Saved.";
             } else {
                 status = "Failed. Required fields are missing!";

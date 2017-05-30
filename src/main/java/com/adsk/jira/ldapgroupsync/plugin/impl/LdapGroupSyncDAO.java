@@ -1,4 +1,4 @@
-package com.adsk.jira.ldapgroupsync.plugin.svc;
+package com.adsk.jira.ldapgroupsync.plugin.impl;
 
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -6,14 +6,14 @@ import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MyLdapGroupSyncDAO
+public class LdapGroupSyncDAO
 {
-    private static final Logger LOGGER = Logger.getLogger(MyLdapGroupSyncDAO.class);
-    private static MyLdapGroupSyncDAO myLdapGroupSyncDAO = null;
+    private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncDAO.class);
+    private static LdapGroupSyncDAO myLdapGroupSyncDAO = null;
     private static Set<String> defaultJiraGroups = null;
     public static String ldapGroupSyncMap = null;
     
-    private MyLdapGroupSyncDAO() { //default jira groups to skip        
+    private LdapGroupSyncDAO() { //default jira groups to skip        
         defaultJiraGroups = new HashSet<String>();
         defaultJiraGroups.add("jira-users");
         defaultJiraGroups.add("jira-administrators");
@@ -21,9 +21,9 @@ public class MyLdapGroupSyncDAO
         defaultJiraGroups.add("jira-developers");
     }
     
-    public static MyLdapGroupSyncDAO getInstance() {
+    public static LdapGroupSyncDAO getInstance() {
         if( myLdapGroupSyncDAO == null ) {
-            myLdapGroupSyncDAO = new MyLdapGroupSyncDAO();
+            myLdapGroupSyncDAO = new LdapGroupSyncDAO();
         }
         return myLdapGroupSyncDAO;
     }        
@@ -39,7 +39,7 @@ public class MyLdapGroupSyncDAO
             return message;
         }
         
-        Set<String> ldap_group_users = MyLdapUtils.getInstance().getGroupMembers(ldap_group);                
+        Set<String> ldap_group_users = LdapGroupSyncLDAPUtils.getInstance().getGroupMembers(ldap_group);                
         if( ldap_group_users == null ) {
             LOGGER.warn("LDAP Group ("+ldap_group+") does not exists.");
             message.setMessage("LDAP Group ("+ldap_group+") does not exists.");
@@ -49,22 +49,22 @@ public class MyLdapGroupSyncDAO
             
             LOGGER.debug(" >>> Size: "+ ldap_group_users.size());
             
-            List<String> jira_group_users = MyJiraUtils.getInstance().getGroupMembers(jira_group);
+            List<String> jira_group_users = LdapGroupSyncJiraUtils.getInstance().getGroupMembers(jira_group);
             if( jira_group_users != null ) {            
                 for(String j : jira_group_users) {
                     if(!ldap_group_users.contains(j)) {
-                        MyJiraUtils.getInstance().removeUserFromGroup(j, jira_group);
+                        LdapGroupSyncJiraUtils.getInstance().removeUserFromGroup(j, jira_group);
                     }
                 }
                 for(String i : ldap_group_users) {
                     if(!jira_group_users.contains(i)) {
-                        MyJiraUtils.getInstance().addUserToGroup(i, jira_group);
+                        LdapGroupSyncJiraUtils.getInstance().addUserToGroup(i, jira_group);
                     }
                 }
             } else {
                 LOGGER.debug("JIRA Group members return NULL. So adding LDAP users.");
                 for(String i : ldap_group_users) {
-                    MyJiraUtils.getInstance().addUserToGroup(i, jira_group);
+                    LdapGroupSyncJiraUtils.getInstance().addUserToGroup(i, jira_group);
                 }
             }
                         
