@@ -17,7 +17,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncMapAction.class);
     private final LdapGroupSyncAOMgr ldapGroupAoMgr = LdapGroupSyncAOMgrImpl.getInstance();    
-    private final LdapGroupSyncMapBean configBean = new LdapGroupSyncMapBean();    
+    private final LdapGroupSyncMapBean configBean = new LdapGroupSyncMapBean();
     private String submitted;
     private String status;
         
@@ -65,7 +65,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                 ldapGroupAoMgr.removeGroupsMapProperty(configBean.getConfigId());
                 status = "Deleted.";
             }else{
-                status = "Config MapId "+configBean.getConfigId()+" is not accepted!";
+                status = "Config Config Id "+configBean.getConfigId()+" is not accepted!";
             }
         }
         else {

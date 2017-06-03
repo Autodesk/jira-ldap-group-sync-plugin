@@ -8,6 +8,7 @@ package com.adsk.jira.ldapgroupsync.plugin.impl;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import java.util.List;
+import java.util.Map;
 
 /**
  *

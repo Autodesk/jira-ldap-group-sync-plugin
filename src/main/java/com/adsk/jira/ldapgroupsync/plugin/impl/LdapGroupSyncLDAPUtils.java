@@ -157,6 +157,8 @@ public class LdapGroupSyncLDAPUtils {
                         }
                     }
                 }
+            } else {
+                LOGGER.error("LDAP Connection Null or Failed.");
             }
         } catch (NamingException e) {
             LOGGER.error(e.getLocalizedMessage());

@@ -9,7 +9,9 @@ import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import com.atlassian.jira.component.ComponentAccessor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.java.ao.Query;
 import org.apache.log4j.Logger;
 
@@ -19,6 +21,8 @@ import org.apache.log4j.Logger;
  */
 public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncAOMgrImpl.class);
+    private static final Map<Integer, LdapGroupSyncMap> ACTIVE_CONFIG_CACHE = 
+            new HashMap<Integer, LdapGroupSyncMap>();
     private static LdapGroupSyncAOMgr ldapGroupSyncAOMgr = null;
     private ActiveObjects ao = null;     
     private LdapGroupSyncAOMgrImpl() {
@@ -40,37 +44,31 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
     public List<LdapGroupSyncMapBean> getSupportedGroupsMapProperties() {
         final LdapGroupSyncMap[] maps = getActiveObjects()
                 .find(LdapGroupSyncMap.class, Query.select().where("SUPPORT = ?", true));
-        if(maps.length > 0) {
-            List<LdapGroupSyncMapBean> configList = new ArrayList<LdapGroupSyncMapBean>();
-            for(LdapGroupSyncMap map : maps){
-                LdapGroupSyncMapBean bean = new LdapGroupSyncMapBean();
-                bean.setConfigId(map.getID());
-                bean.setLdapGroup(map.getLdapGroup());
-                bean.setJiraGroup(map.getJiraGroup());
-                bean.setSupport(map.getSupport());
-                configList.add(bean);
-            }
-            return configList;
+        List<LdapGroupSyncMapBean> configList = new ArrayList<LdapGroupSyncMapBean>();
+        for(LdapGroupSyncMap map : maps){
+            LdapGroupSyncMapBean bean = new LdapGroupSyncMapBean();
+            bean.setConfigId(map.getID());
+            bean.setLdapGroup(map.getLdapGroup());
+            bean.setJiraGroup(map.getJiraGroup());
+            bean.setSupport(map.getSupport());
+            configList.add(bean);
         }
-        return null;
+        return configList;
     }
     
     public List<LdapGroupSyncMapBean> getAllGroupsMapProperties() {        
         final LdapGroupSyncMap[] maps = getActiveObjects()
-                .find(LdapGroupSyncMap.class, Query.select());
-        if(maps.length > 0) {
-            List<LdapGroupSyncMapBean> configList = new ArrayList<LdapGroupSyncMapBean>();
-            for(LdapGroupSyncMap map : maps){
-                LdapGroupSyncMapBean bean = new LdapGroupSyncMapBean();
-                bean.setConfigId(map.getID());
-                bean.setLdapGroup(map.getLdapGroup());
-                bean.setJiraGroup(map.getJiraGroup());
-                bean.setSupport(map.getSupport());
-                configList.add(bean);
-            }
-            return configList;
+                .find(LdapGroupSyncMap.class, Query.select());        
+        List<LdapGroupSyncMapBean> configList = new ArrayList<LdapGroupSyncMapBean>();
+        for(LdapGroupSyncMap map : maps){
+            LdapGroupSyncMapBean bean = new LdapGroupSyncMapBean();
+            bean.setConfigId(map.getID());
+            bean.setLdapGroup(map.getLdapGroup());
+            bean.setJiraGroup(map.getJiraGroup());
+            bean.setSupport(map.getSupport());
+            configList.add(bean);
         }
-        return null;
+        return configList;
     }
     
     public void addGroupsMapProperty(LdapGroupSyncMapBean configBean) {
@@ -111,7 +109,8 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
         final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, 
                 Query.select().where("ID = ?", configId));
         if(maps.length > 0) {
-            ao.delete(maps[0]);
+            LdapGroupSyncMap map = maps[0];            
+            ao.delete(map);
         }
     }
     
@@ -133,5 +132,5 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
             return bean;
         }
         return null;
-    }
+    }        
 }

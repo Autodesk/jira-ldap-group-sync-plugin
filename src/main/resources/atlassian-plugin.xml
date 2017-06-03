@@ -3,6 +3,7 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="atlassian-data-center-compatible">true</param>
         <param name="plugin-icon">images/pluginIcon.png</param>
         <param name="plugin-logo">images/pluginLogo.png</param>
         <param name="configure.url">/secure/LdapGroupSyncConfigAction.jspa</param>
@@ -12,26 +13,25 @@
     <resource type="i18n" name="i18n" location="jira-ldap-group-sync-plugin"/>
     
     <!-- publish our component -->
-    <component key="jira-ldap-group-sync-config-manager" name="LDAP Group(s) Sync Config Manager" 
+    <component key="jira-ldap-group-sync-config-manager" name="LDAP Groups Sync Config Manager" 
         class="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigMgrImpl">
         <interface>com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigMgr</interface>
     </component>
-    <component key="jira-ldap-group-sync-map-ao-manager" name="LDAP Group(s) Sync Map AO Manager" 
+    <component key="jira-ldap-group-sync-map-ao-manager" name="LDAP Groups Sync Map AO Manager" 
                class="com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOCompImpl" public="true">
         <interface>com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOComp</interface>
     </component>
     
-    <component-import key="userManager" i18n-name-key="userManager.name">
-          <description key="userManager.description" />
+    <component-import key="userManager" name="User Manager">
           <interface>com.atlassian.sal.api.user.UserManager</interface>
      </component-import>
     
-    <rest key="jira-ldap-group-sync-rest-resource" name="jira-ldap-group-sync-rest-resource" i18n-name-key="jira-ldap-group-sync-rest-resource.name" 
+    <rest key="jira-ldap-group-sync-rest-resource" name="LDAP Groups Sync REST API" 
         path="/ldapgroupsync" version="1.0">
     </rest>
     
     <!-- add our web resources -->
-    <web-resource key="jira-ldap-group-sync-plugin-resources" name="jira-ldap-group-sync-plugin Web Resources">
+    <web-resource key="jira-ldap-group-sync-plugin-resources" name="LDAP Groups Sync Web Resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>        
         <resource type="download" name="jira-ldap-group-sync-plugin.css" location="/css/jira-ldap-group-sync-plugin.css"/>
         <resource type="download" name="jira-ldap-group-sync-plugin.js" location="/js/jira-ldap-group-sync-plugin.js"/>
@@ -40,28 +40,31 @@
     </web-resource>
     
     <!-- Active Objects -->
-    <component-import key="ao" name="Active Objects service" interface="com.atlassian.activeobjects.external.ActiveObjects">
-      <description>Component to access Active Objects service</description>
+    <component-import key="ao" name="LDAP Groups Sync Active Objects service" 
+        interface="com.atlassian.activeobjects.external.ActiveObjects">
     </component-import>
-    <ao key="jira-ldap-group-sync-ao">
-      <description>AO interface for storing AJP entities</description>
+    <ao key="jira-ldap-group-sync-ao" name="LDAP Groups Sync Active Objects Entity">
       <entity>com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncMap</entity>
     </ao>
     
     <!-- Web Options panel -->
-    <web-section key="jira-ldap-group-sync-section" name="LDAP Group(s) Sync" location="admin_plugins_menu" i18n-name-key="jira-ldap-group-sync.section" weight="20" application="jira">
+    <web-section key="jira-ldap-group-sync-section" name="LDAP Groups Sync Section" 
+        location="admin_plugins_menu" i18n-name-key="jira-ldap-group-sync.section" weight="20" application="jira">
         <label key="jira.ldap.group.sync.section.label" />
     </web-section>
       
-    <webwork1 key="jira-ldap-group-sync-configure-action" name="JIRA LDAP Group Sync Configure Action" i18n-name-key="jira-ldap-group-sync-configure-action.name">
+    <webwork1 key="jira-ldap-group-sync-configure-action" name="JIRA LDAP Group Sync Configure Action" 
+        i18n-name-key="jira-ldap-group-sync-configure-action.name">
         <actions>
-          <action name="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigAction" alias="LdapGroupSyncConfigAction">
+          <action name="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigAction" 
+            alias="LdapGroupSyncConfigAction">
             <view name="success">/templates/ldap_group_sync_configure.vm</view>
             <view name="error">/secure/views/permissionviolation.jsp</view>
           </action>
         </actions>
     </webwork1>
-    <web-item key="jira-ldap-group-sync-confgure-item" name="JIRA LDAP Group Sync Configure Admin" i18n-name-key="jira-ldap-group-sync-configure-item.name"
+    <web-item key="jira-ldap-group-sync-confgure-item" name="JIRA LDAP Group Sync Configure Admin" 
+        i18n-name-key="jira-ldap-group-sync-configure-item.name"
         section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
         <label key="jira.ldap.group.sync.configure.label" />
         <link linkId="jira-ldap-group-sync-configure-link">/secure/LdapGroupSyncConfigAction.jspa</link>
@@ -70,15 +73,18 @@
 	</condition>
     </web-item>
            
-    <webwork1 key="jira-ldap-group-sync-map-action" name="JIRA LDAP Group Sync Action" i18n-name-key="jira-ldap-group-sync-map-action.name">
+    <webwork1 key="jira-ldap-group-sync-map-action" name="JIRA LDAP Group Sync Action" 
+        i18n-name-key="jira-ldap-group-sync-map-action.name">
         <actions>
-          <action name="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncMapAction" alias="LdapGroupSyncMapAction">
+          <action name="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncMapAction" 
+            alias="LdapGroupSyncMapAction">
             <view name="success">/templates/ldap_group_sync_map.vm</view>
             <view name="error">/secure/views/permissionviolation.jsp</view>
           </action>
         </actions>
     </webwork1>
-    <web-item key="jira-ldap-group-sync-map-item" name="JIRA LDAP Group Sync Map Admin" i18n-name-key="jira-ldap-group-sync-map-item.name"
+    <web-item key="jira-ldap-group-sync-map-item" name="JIRA LDAP Group Sync Map Admin" 
+        i18n-name-key="jira-ldap-group-sync-map-item.name"
         section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
         <label key="jira.ldap.group.sync.maps.label" />
         <link linkId="jira-ldap-group-sync-link">/secure/LdapGroupSyncMapAction.jspa</link>
@@ -87,15 +93,18 @@
 	</condition>
     </web-item>
     
-    <webwork1 key="jira-ldap-group-sync-run-action" name="JIRA LDAP Group Sync Run Action" i18n-name-key="jira-ldap-group-sync-run-action.name">
+    <webwork1 key="jira-ldap-group-sync-run-action" name="JIRA LDAP Group Sync Run Action" 
+        i18n-name-key="jira-ldap-group-sync-run-action.name">
         <actions>
-          <action name="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncRunAction" alias="LdapGroupSyncRunAction">
+          <action name="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncRunAction" 
+            alias="LdapGroupSyncRunAction">
             <view name="success">/templates/ldap_group_sync_run.vm</view>
             <view name="error">/secure/views/permissionviolation.jsp</view>
           </action>
         </actions>
     </webwork1>
-    <web-item key="jira-ldap-group-sync-run-item" name="JIRA LDAP Group Sync Run Admin" i18n-name-key="jira-ldap-group-sync-run-item.name"
+    <web-item key="jira-ldap-group-sync-run-item" name="JIRA LDAP Group Sync Run Admin" 
+        i18n-name-key="jira-ldap-group-sync-run-item.name"
         section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
         <label key="jira.ldap.group.sync.run.label" />
         <link linkId="jira-ldap-group-run-link">/secure/LdapGroupSyncRunAction.jspa</link>

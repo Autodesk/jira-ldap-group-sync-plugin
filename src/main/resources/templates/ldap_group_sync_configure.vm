@@ -3,28 +3,31 @@
 <head>
     <title>$i18n.getText("jira.ldap.group.configure.option.label")</title>
     <meta name="decorator" content="atl.admin" />
-    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()" />
-    $webResourceManager.requireResourcesForContext($i18n.getText("jira-ldap-group-sync-plugin-resources.context"))
+    $webResourceManager.requireResource("com.adsk.jira.ldapgroupsync.plugin.jira-ldap-group-sync-plugin:jira-ldap-group-sync-plugin-resources")
     <script>
         function prepareEdit() {
-            AJS.$("#ldapConfigDisplay").stop().hide();
-            AJS.$("#ldapConfigEdit").stop().show();
+            AJS.$("#LdapConfigDisplay").stop().hide();
+            AJS.$("#LdapConfigEdit").stop().show();
         }
         function prepareCancel() {
-            AJS.$("#ldapConfigDisplay").stop().show();
-            AJS.$("#ldapConfigEdit").stop().hide();
+            AJS.$("#LdapConfigDisplay").stop().show();
+            AJS.$("#LdapConfigEdit").stop().hide();
         }        
     </script>   
 </head>
 <body>
 
+<p>
+<span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.configure.option.label")</span>
+<a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Configure-LDAP-Connection" target="_blank"
+    class="adskldapsync_question" title="LDAP Connection Configure Documentation"></a>
+<a class="adskldapsync_config_edit" href="#" onClick="prepareEdit();" title="LDAP Configuration Edit"></a>
+</p>
 
 <!-- config display -->
 
-<div id="ldapConfigDisplay">
-<form id="admin" class="aui" method="post" action="LdapGroupSyncConfigAction.jspa">
-<h2>$i18n.getText("jira.ldap.group.configure.option.label")</h2>
-
+<div id="LdapConfigDisplay">
+<form id="LdapConfigDisplayForm" class="aui" method="post" action="LdapGroupSyncConfigAction.jspa">
 <div class="field-group">
     <label for="disabled-field-id">
         $i18n.getText("jira.ldap.group.configure.option.ldap_url.label"):
@@ -103,9 +106,9 @@
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.is_nested.description")</div>
 </div>
 
-<div class="aui-buttons">
+<!--<div class="aui-buttons">
     <input class="aui-button" type="button" name="edit" value="Edit &uarr;" onClick="prepareEdit();" /> 
-</div>
+</div>-->
 </form>
 </div>
 
@@ -114,10 +117,8 @@
 <!-- config edit -->
 
 
-<div id="ldapConfigEdit" style="display: none;">
-<form id="admin" class="aui" method="post" action="LdapGroupSyncConfigAction.jspa" >
-<h2>$i18n.getText("jira.ldap.group.configure.option.label") &rarr; EDIT</h2>
-
+<div id="LdapConfigEdit" style="display: none;">
+<form id="LdapConfigEditForm" class="aui" method="post" action="LdapGroupSyncConfigAction.jspa" >
 <div class="field-group">
     <label for="ldap_url">
         $i18n.getText("jira.ldap.group.configure.option.ldap_url.label"):

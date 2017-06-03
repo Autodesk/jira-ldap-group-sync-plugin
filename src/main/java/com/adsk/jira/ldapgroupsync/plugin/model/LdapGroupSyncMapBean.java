@@ -1,9 +1,17 @@
 package com.adsk.jira.ldapgroupsync.plugin.model;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+@JsonAutoDetect
 public class LdapGroupSyncMapBean {
+    @JsonProperty
     private long configId;
+    @JsonProperty
     private String ldapGroup;
+    @JsonProperty
     private String jiraGroup;
+    @JsonProperty
     private boolean support;
 
     public long getConfigId() {

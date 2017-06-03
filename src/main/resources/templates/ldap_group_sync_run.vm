@@ -3,8 +3,7 @@
 <head>
     <title>$i18n.getText("jira.ldap.group.sync.run.option.label")</title>
     <meta name="decorator" content="atl.admin" />
-    <meta name="application-base-url" content="$applicationProperties.getBaseUrl()" />
-    $webResourceManager.requireResourcesForContext($i18n.getText("jira-ldap-group-sync-plugin-resources.context"))
+    $webResourceManager.requireResource("com.adsk.jira.ldapgroupsync.plugin.jira-ldap-group-sync-plugin:jira-ldap-group-sync-plugin-resources")
     <script>
         function prepareRun() {
             AJS.$("#runStatus").html("Running").stop().show();
@@ -14,10 +13,14 @@
 <body>
 
 
+<p>
+<span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.sync.run.option.label")</span>
+<a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Run-On-demand-Sync" target="_blank"
+    class="adskldapsync_question" title="LDAP On-demand Group Sync Documentation"></a>
+</p>
+
 <div id="ldapGroupSyncRun">
 <form id="admin" class="aui" method="post" action="LdapGroupSyncRunAction.jspa" >
-<h2>$i18n.getText("jira.ldap.group.sync.run.option.label")</h2>
-
 <div class="field-group">
     <label for="ldap_group">
         $i18n.getText("jira.ldap.group.sync.run.option.ldap_group.label"):

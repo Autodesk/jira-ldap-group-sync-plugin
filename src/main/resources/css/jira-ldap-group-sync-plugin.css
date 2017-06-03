@@ -30,7 +30,19 @@
 }
 
 .adskldapsync_recache {
-    background-image: url('images/settings.png');
+    background-image: url('images/cache.gif');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    height: 24px;
+    width: 24px;    
+    display: inline;
+    vertical-align: middle;
+    background-position: 50% 50%;
+    float: right;
+}
+
+.adskldapsync_config_edit {
+    background-image: url('images/cache.gif');
     background-repeat: no-repeat;
     background-size: 100%;
     height: 24px;

@@ -6,28 +6,25 @@ import com.atlassian.configurable.ObjectConfiguration;
 import com.atlassian.configurable.ObjectConfigurationException;
 import com.atlassian.jira.service.AbstractService;
 import org.apache.log4j.Logger;
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgr;
 import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgrImpl;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import java.util.List;
 
 public class LdapGroupSync extends AbstractService
 {
-    private static final Logger LOGGER = Logger.getLogger(LdapGroupSync.class);    
-    private final LdapGroupSyncAOMgr ao;
-    private LdapGroupSync() {
-        ao = LdapGroupSyncAOMgrImpl.getInstance();
-    }
+    private static final Logger LOGGER = Logger.getLogger(LdapGroupSync.class);
     
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();        
         LOGGER.info("LDAP Group(s) Sync Service Started.");        
         
-        List<LdapGroupSyncMapBean> maps = ao.getSupportedGroupsMapProperties();
-        for(LdapGroupSyncMapBean m : maps) {
+        List<LdapGroupSyncMapBean> maps = LdapGroupSyncAOMgrImpl
+                .getInstance().getSupportedGroupsMapProperties();
+        
+        for(LdapGroupSyncMapBean map : maps) {
             MessageBean message = LdapGroupSyncDAO.getInstance()
-                    .sync(m.getLdapGroup(), m.getJiraGroup()); //Do Sync Here.
+                    .sync(map.getLdapGroup(), map.getJiraGroup()); //Do Sync Here.
             LOGGER.debug(message.getMessage());
         }
         

@@ -45,12 +45,13 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
             if(ldapGroup != null && !"".equals(ldapGroup) && jiraGroup != null && !"".equals(jiraGroup)) {
                 if(!defaultJiraGroups.contains(jiraGroup.toLowerCase()) ) {
                     if(ldapGroupSyncMgr.isJiraGroupNotInSupport(jiraGroup) == true) {
-                        status = "This JIRA group ("+jiraGroup+") is mapped not to support. Skipping!";
+                        status = "This JIRA group ("+jiraGroup+") is configured not to support. Skipping!";
                     }else{
                         status = "Running.";
                         long startTime = System.currentTimeMillis();
 
-                        MessageBean result = LdapGroupSyncDAO.getInstance().sync(ldapGroup.trim(), jiraGroup.trim());
+                        MessageBean result = LdapGroupSyncDAO.getInstance()
+                                .sync(ldapGroup.trim(), jiraGroup.trim());
 
                         long totalTime = System.currentTimeMillis() - startTime;                
                         LOGGER.info(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
