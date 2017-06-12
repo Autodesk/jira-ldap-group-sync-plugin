@@ -22,6 +22,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -130,8 +131,8 @@ public class LdapGroupResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/self/sync")
-    public Response selfLdapGroupSync(LdapGroupSyncBean syncBean) {
+    @Path("/self/sync/{ldapJiraGroup}")
+    public Response selfLdapGroupSync(@PathParam("ldapJiraGroup") String ldapJiraGroup) {
             
         long startTime = System.currentTimeMillis();
         
@@ -140,38 +141,31 @@ public class LdapGroupResource {
                 
         ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
         
-        LOGGER.debug("["+loggedInAppUser.getUsername() +"] ["+ syncBean.getLdapGroup() +":"+ syncBean.getJiraGroup() +"] Started.");
-        
-        //check permissions
-        if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, loggedInAppUser) == false ) {
-            messageBean.setMessage("[Error] Permission denied. System admin access is required.");
-            return Response.status(Response.Status.FORBIDDEN).entity(messageBean).build();
-        }
+        LOGGER.debug("Self Sync ["+loggedInAppUser.getUsername() +"] ["+ ldapJiraGroup +"] Started.");
         
         //check required paramaters
-        if( syncBean.getLdapGroup() == null || "".equals(syncBean.getLdapGroup()) 
-                || syncBean.getJiraGroup() == null || "".equals(syncBean.getJiraGroup()) ) {
+        if( ldapJiraGroup == null || "".equals(ldapJiraGroup) ) {
             messageBean.setMessage("[Error] Required fields are missing.");
             return Response.status(Response.Status.BAD_REQUEST).entity(messageBean).build();
         }
         
-        if(defaultJiraGroups.contains(syncBean.getJiraGroup().toLowerCase()) ) { //skip not supported
-            messageBean.setMessage("This plugin does not support JIRA default group ("+syncBean.getJiraGroup()+"). Skipping!");
+        if(defaultJiraGroups.contains(ldapJiraGroup.toLowerCase()) ) { //skip not supported
+            messageBean.setMessage("This plugin does not support JIRA default group ("+ldapJiraGroup+"). Skipping!");
             return Response.ok(messageBean).build();
         }
         
-        if(ldapGroupSyncMgr.isJiraGroupNotInSupport(syncBean.getJiraGroup()) == true) { //skip not supported
-            messageBean.setMessage("This JIRA group ("+syncBean.getJiraGroup()+") is mapped not to support. Skipping!");
+        if(ldapGroupSyncMgr.isJiraGroupNotInSupport(ldapJiraGroup) == true) { //skip not supported
+            messageBean.setMessage("This JIRA group ("+ldapJiraGroup+") is mapped not to support. Skipping!");
             return Response.ok(messageBean).build();
         }
                 
         MessageBean result = LdapGroupSyncDAO.getInstance()
-                .sync(syncBean.getLdapGroup(), syncBean.getJiraGroup());
+                .sync(ldapJiraGroup, ldapJiraGroup);
         
         long totalTime = System.currentTimeMillis() - startTime;
         
-        LOGGER.debug("["+loggedInAppUser.getUsername()+"] ["+ syncBean.getLdapGroup() +":"+ 
-                syncBean.getJiraGroup() +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+        LOGGER.debug("Self Sync ["+loggedInAppUser.getUsername()+"] ["+ 
+                ldapJiraGroup +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         
         result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         return Response.ok(result).build();
