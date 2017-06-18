@@ -5,9 +5,6 @@
  */
 package com.adsk.jira.ldapgroupsync.plugin.api;
 
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncDAO;
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgr;
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgrImpl;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.security.GlobalPermissionManager;
 import com.atlassian.jira.security.JiraAuthenticationContext;
@@ -35,17 +32,22 @@ import org.apache.log4j.Logger;
 @Path("/run")
 public class LdapGroupResource {
     
-    private static final Logger LOGGER = Logger.getLogger(LdapGroupResource.class);
-    private final JiraAuthenticationContext jiraAuthenticationContext;
-    private GlobalPermissionManager permissionManager = null;
+    private static final Logger logger = Logger.getLogger(LdapGroupResource.class);    
     private static Set<String> defaultJiraGroups = null;
-    private final LdapGroupSyncAOMgr ldapGroupSyncMgr;
+    
+    private final JiraAuthenticationContext jiraAuthenticationContext;
+    private final GlobalPermissionManager permissionManager;
+    private final LdapGroupSyncAOMgr ldapGroupSyncAoMgr;
+    private final LDAPGroupSyncUtil ldapGroupSyncUtil;
     
     public LdapGroupResource(JiraAuthenticationContext jiraAuthenticationContext, 
-            GlobalPermissionManager permissionManager) {
+            GlobalPermissionManager permissionManager, LdapGroupSyncAOMgr ldapGroupSyncAoMgr,
+            LDAPGroupSyncUtil ldapGroupSyncUtil) {
         this.jiraAuthenticationContext = jiraAuthenticationContext;
         this.permissionManager = permissionManager;
-        this.ldapGroupSyncMgr = LdapGroupSyncAOMgrImpl.getInstance();
+        this.ldapGroupSyncAoMgr = ldapGroupSyncAoMgr;
+        this.ldapGroupSyncUtil = ldapGroupSyncUtil;
+        
         defaultJiraGroups = new HashSet<String>();
         defaultJiraGroups.add("jira-users");
         defaultJiraGroups.add("jira-administrators");
@@ -61,7 +63,7 @@ public class LdapGroupResource {
         
         ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
         
-        LOGGER.debug("["+loggedInAppUser.getUsername() +"] Get Configs Started.");
+        logger.debug("["+loggedInAppUser.getUsername() +"] Get Configs Started.");
         
         //check permissions
         if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, loggedInAppUser) == false ) {
@@ -69,11 +71,10 @@ public class LdapGroupResource {
             return Response.status(Response.Status.FORBIDDEN).entity(authError).build();
         }
                 
-        List<LdapGroupSyncMapBean> results = LdapGroupSyncAOMgrImpl.getInstance()
-                .getAllGroupsMapProperties();
+        List<LdapGroupSyncMapBean> results = ldapGroupSyncAoMgr.getAllGroupsMapProperties();
         
         long totalTime = System.currentTimeMillis() - startTime;        
-        LOGGER.debug("["+loggedInAppUser.getUsername()+"] Get Config. Took "+ totalTime/ 1000d +" Seconds");
+        logger.debug("["+loggedInAppUser.getUsername()+"] Get Config. Took "+ totalTime/ 1000d +" Seconds");
         return Response.ok(results).build();
     }
     
@@ -91,7 +92,7 @@ public class LdapGroupResource {
                 
         ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
         
-        LOGGER.debug("["+loggedInAppUser.getUsername() +"] ["+ syncBean.getLdapGroup() +":"+ syncBean.getJiraGroup() +"] Started.");
+        logger.debug("["+loggedInAppUser.getUsername() +"] ["+ syncBean.getLdapGroup() +":"+ syncBean.getJiraGroup() +"] Started.");
         
         //check permissions
         if( permissionManager.hasPermission(GlobalPermissionKey.ADMINISTER, loggedInAppUser) == false ) {
@@ -111,17 +112,16 @@ public class LdapGroupResource {
             return Response.ok(messageBean).build();
         }
         
-        if(ldapGroupSyncMgr.isJiraGroupNotInSupport(syncBean.getJiraGroup()) == true) { //skip not supported
+        if(ldapGroupSyncAoMgr.isJiraGroupNotInSupport(syncBean.getJiraGroup()) == true) { //skip not supported
             messageBean.setMessage("This JIRA group ("+syncBean.getJiraGroup()+") is mapped not to support. Skipping!");
             return Response.ok(messageBean).build();
         }
                 
-        MessageBean result = LdapGroupSyncDAO.getInstance()
-                .sync(syncBean.getLdapGroup(), syncBean.getJiraGroup());
+        MessageBean result = ldapGroupSyncUtil.sync(null, syncBean.getLdapGroup(), syncBean.getJiraGroup());
         
         long totalTime = System.currentTimeMillis() - startTime;
         
-        LOGGER.debug("["+loggedInAppUser.getUsername()+"] ["+ syncBean.getLdapGroup() +":"+ 
+        logger.debug("["+loggedInAppUser.getUsername()+"] ["+ syncBean.getLdapGroup() +":"+ 
                 syncBean.getJiraGroup() +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         
         result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
@@ -141,7 +141,7 @@ public class LdapGroupResource {
                 
         ApplicationUser loggedInAppUser = jiraAuthenticationContext.getLoggedInUser();
         
-        LOGGER.debug("Self Sync ["+loggedInAppUser.getUsername() +"] ["+ ldapJiraGroup +"] Started.");
+        logger.debug("Self Sync ["+loggedInAppUser.getUsername() +"] ["+ ldapJiraGroup +"] Started.");
         
         //check required paramaters
         if( ldapJiraGroup == null || "".equals(ldapJiraGroup) ) {
@@ -154,17 +154,16 @@ public class LdapGroupResource {
             return Response.ok(messageBean).build();
         }
         
-        if(ldapGroupSyncMgr.isJiraGroupNotInSupport(ldapJiraGroup) == true) { //skip not supported
+        if(ldapGroupSyncAoMgr.isJiraGroupNotInSupport(ldapJiraGroup) == true) { //skip not supported
             messageBean.setMessage("This JIRA group ("+ldapJiraGroup+") is mapped not to support. Skipping!");
             return Response.ok(messageBean).build();
         }
                 
-        MessageBean result = LdapGroupSyncDAO.getInstance()
-                .sync(ldapJiraGroup, ldapJiraGroup);
+        MessageBean result = ldapGroupSyncUtil.sync(null, ldapJiraGroup, ldapJiraGroup);
         
         long totalTime = System.currentTimeMillis() - startTime;
         
-        LOGGER.debug("Self Sync ["+loggedInAppUser.getUsername()+"] ["+ 
+        logger.debug("Self Sync ["+loggedInAppUser.getUsername()+"] ["+ 
                 ldapJiraGroup +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         
         result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");

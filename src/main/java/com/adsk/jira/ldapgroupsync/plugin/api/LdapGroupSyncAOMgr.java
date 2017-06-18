@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.impl;
+package com.adsk.jira.ldapgroupsync.plugin.api;
 
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.activeobjects.external.ActiveObjects;
 import java.util.List;
-import java.util.Map;
 
 /**
  *

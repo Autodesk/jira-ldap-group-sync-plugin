@@ -1,7 +1,6 @@
 package com.adsk.jira.ldapgroupsync.plugin.web;
 
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgr;
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgrImpl;
+import com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
@@ -15,12 +14,16 @@ import org.apache.log4j.Logger;
 public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncMapAction.class);
-    private final LdapGroupSyncAOMgr ldapGroupAoMgr = LdapGroupSyncAOMgrImpl.getInstance();    
+    private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncMapAction.class);    
     private final LdapGroupSyncMapBean configBean = new LdapGroupSyncMapBean();
     private String submitted;
     private String status;
-        
+    
+    private final LdapGroupSyncAOMgr ldapGroupAoMgr;
+    public LdapGroupSyncMapAction(LdapGroupSyncAOMgr ldapGroupAoMgr) {
+        this.ldapGroupAoMgr = ldapGroupAoMgr;
+    }
+    
     @Override
     public String doExecute() throws Exception {
         if ( !hasGlobalPermission(GlobalPermissionKey.ADMINISTER) ) {

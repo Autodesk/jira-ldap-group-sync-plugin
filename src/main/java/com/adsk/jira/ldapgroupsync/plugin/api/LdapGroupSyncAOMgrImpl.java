@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.adsk.jira.ldapgroupsync.plugin.impl;
+package com.adsk.jira.ldapgroupsync.plugin.api;
 
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.atlassian.activeobjects.external.ActiveObjects;
-import com.atlassian.jira.component.ComponentAccessor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import net.java.ao.Query;
 import org.apache.log4j.Logger;
 
@@ -20,21 +17,11 @@ import org.apache.log4j.Logger;
  * @author prasadve
  */
 public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
-    private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncAOMgrImpl.class);
-    private static final Map<Integer, LdapGroupSyncMap> ACTIVE_CONFIG_CACHE = 
-            new HashMap<Integer, LdapGroupSyncMap>();
-    private static LdapGroupSyncAOMgr ldapGroupSyncAOMgr = null;
-    private ActiveObjects ao = null;     
-    private LdapGroupSyncAOMgrImpl() {
-        this.ao = ComponentAccessor.getOSGiComponentInstanceOfType(LdapGroupSyncAOComp.class)
-                .getActiveObjects();
-    }
+    private static final Logger logger = Logger.getLogger(LdapGroupSyncAOMgrImpl.class);    
     
-    public static LdapGroupSyncAOMgr getInstance() {
-        if( ldapGroupSyncAOMgr == null ) {
-            ldapGroupSyncAOMgr = new LdapGroupSyncAOMgrImpl();
-        }
-        return ldapGroupSyncAOMgr;
+    private final ActiveObjects ao;     
+    private LdapGroupSyncAOMgrImpl(ActiveObjects ao) {
+        this.ao = ao;
     }
 
     public ActiveObjects getActiveObjects() {

@@ -17,9 +17,26 @@
         class="com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigMgrImpl">
         <interface>com.adsk.jira.ldapgroupsync.plugin.web.LdapGroupSyncConfigMgr</interface>
     </component>
-    <component key="jira-ldap-group-sync-map-ao-manager" name="LDAP Groups Sync Map AO Manager" 
-               class="com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOCompImpl" public="true">
-        <interface>com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOComp</interface>
+    
+    <component key="jira-ldap-group-sync-util-manager" name="LDAP Groups Sync Util Manager" 
+               class="com.adsk.jira.ldapgroupsync.plugin.api.LDAPGroupSyncUtilImpl">
+        <interface>com.adsk.jira.ldapgroupsync.plugin.api.LDAPGroupSyncUtil</interface>
+    </component>
+    
+    <component key="jira-ldap-group-sync-map-ao-manager" name="LDAP Groups Sync AO Manager" 
+               class="com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgrImpl">
+        <interface>com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr</interface>
+    </component>
+    
+    <component-import key="pluginScheduler" name="LDAP Groups Sync Plugin Scheduler">
+        <interface>com.atlassian.sal.api.scheduling.PluginScheduler</interface>
+    </component-import>
+    
+    <component key="jira-ldap-group-sync-scheduler" name="LDAP Groups Sync Plugin Scheduler Manager" 
+               class="com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncPluginScheduleImpl" 
+               system="true" public="true">        
+        <interface>com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncPluginSchedule</interface>
+        <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
     </component>
     
     <component-import key="userManager" name="User Manager">
@@ -44,7 +61,7 @@
         interface="com.atlassian.activeobjects.external.ActiveObjects">
     </component-import>
     <ao key="jira-ldap-group-sync-ao" name="LDAP Groups Sync Active Objects Entity">
-      <entity>com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncMap</entity>
+      <entity>com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncMap</entity>
     </ao>
     
     <!-- Web Options panel -->

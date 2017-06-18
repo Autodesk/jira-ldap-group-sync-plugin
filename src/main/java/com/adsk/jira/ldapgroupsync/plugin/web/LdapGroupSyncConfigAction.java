@@ -5,10 +5,10 @@
  */
 package com.adsk.jira.ldapgroupsync.plugin.web;
 
+import com.adsk.jira.ldapgroupsync.plugin.api.LDAPGroupSyncUtil;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncConfigBean;
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncLDAPUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -19,13 +19,17 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
     
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncConfigAction.class);
-    private LdapGroupSyncConfigBean configBean = new LdapGroupSyncConfigBean();
-    private final LdapGroupSyncConfigMgr ldapGroupSyncConfigMgr;
+    private LdapGroupSyncConfigBean configBean = new LdapGroupSyncConfigBean();    
     private String submitted;
     private String status;
     
-    public LdapGroupSyncConfigAction(LdapGroupSyncConfigMgr ldapGroupSyncConfigMgr) {
+    private final LdapGroupSyncConfigMgr ldapGroupSyncConfigMgr;
+    private final LDAPGroupSyncUtil ldapGroupSyncUtil;
+    
+    public LdapGroupSyncConfigAction(LdapGroupSyncConfigMgr ldapGroupSyncConfigMgr, 
+            LDAPGroupSyncUtil ldapGroupSyncUtil) {
         this.ldapGroupSyncConfigMgr = ldapGroupSyncConfigMgr;
+        this.ldapGroupSyncUtil = ldapGroupSyncUtil;
     }
     
     @Override
@@ -62,42 +66,42 @@ public class LdapGroupSyncConfigAction extends JiraWebActionSupport {
                     && SECURITY_PASSWORD != null && !"".equals(SECURITY_PASSWORD) && BASE_DN != null && !"".equals(BASE_DN) ) {
                 ldapGroupSyncConfigMgr.setGroupsConfigProperties(configBean);
                 
-                LdapGroupSyncLDAPUtils.LDAP_URL = configBean.getLdap_url();
-                LdapGroupSyncLDAPUtils.SECURITY_PRINCIPAL = configBean.getSecurity_principal();
-                LdapGroupSyncLDAPUtils.SECURITY_PASSWORD = configBean.getSecurity_password();
-                LdapGroupSyncLDAPUtils.BASE_DN = configBean.getBase_dn();
+                ldapGroupSyncUtil.setLdapUrl(configBean.getLdap_url());
+                ldapGroupSyncUtil.setSecurityPrincipal(configBean.getSecurity_principal());
+                ldapGroupSyncUtil.setSecurityPassword(configBean.getSecurity_password());
+                ldapGroupSyncUtil.setBaseDn(configBean.getBase_dn());
                 
                 if(USER_MEMBER_SEARCH_FILTER != null && !"".equals(USER_MEMBER_SEARCH_FILTER)) {
-                    LdapGroupSyncLDAPUtils.USER_MEMBER_SEARCH_FILTER = configBean.getUserMemberSearch_filter();
+                    ldapGroupSyncUtil.setUserMemberSearchFilter(configBean.getUserMemberSearch_filter());
                 } else {
-                    LdapGroupSyncLDAPUtils.USER_MEMBER_SEARCH_FILTER = "(&(objectClass=user)(memberOf={0}))"; //default
+                    ldapGroupSyncUtil.setUserMemberSearchFilter("(&(objectClass=user)(memberOf={0}))"); //default
                 }
                 
                 if(GROUP_SEARCH_FILTER != null && !"".equals(GROUP_SEARCH_FILTER)) { 
-                    LdapGroupSyncLDAPUtils.GROUP_SEARCH_FILTER = configBean.getGroupSearch_filter();
+                    ldapGroupSyncUtil.setGroupSearchFilter(configBean.getGroupSearch_filter());
                 } else {
-                    LdapGroupSyncLDAPUtils.GROUP_SEARCH_FILTER = "(&(objectClass=group)(sAMAccountName={0}))"; //default
+                    ldapGroupSyncUtil.setGroupSearchFilter("(&(objectClass=group)(sAMAccountName={0}))"); //default
                 }
                 
                 if(GROUP_MEMBER_SEARCH_FILTER != null && !"".equals(GROUP_MEMBER_SEARCH_FILTER)) { 
-                    LdapGroupSyncLDAPUtils.GROUP_MEMBER_SEARCH_FILTER = configBean.getGroupMemberSearch_filter();
+                    ldapGroupSyncUtil.setGroupMemberSearchFilter(configBean.getGroupMemberSearch_filter());
                 } else {
-                    LdapGroupSyncLDAPUtils.GROUP_MEMBER_SEARCH_FILTER = "(&(objectClass=group)(memberOf={0}))"; //default
+                    ldapGroupSyncUtil.setGroupMemberSearchFilter("(&(objectClass=group)(memberOf={0}))"); //default
                 }
                 
                 if(USER_ATTR != null && !"".equals(USER_ATTR)) {
-                    LdapGroupSyncLDAPUtils.USER_ATTR = configBean.getUser_attr();
+                    ldapGroupSyncUtil.setUserAttr(configBean.getUser_attr());
                 } else {
-                    LdapGroupSyncLDAPUtils.USER_ATTR = "sAMAccountName"; //default
+                    ldapGroupSyncUtil.setUserAttr("sAMAccountName"); //default
                 }
                 
                 if(IS_NESTED != null && !"".equals(IS_NESTED)) {
-                    LdapGroupSyncLDAPUtils.IS_NESTED = configBean.getIsNested();
+                    ldapGroupSyncUtil.setIsNested(configBean.getIsNested());
                 } else {
-                    LdapGroupSyncLDAPUtils.IS_NESTED = "FALSE"; //default
+                    ldapGroupSyncUtil.setIsNested("FALSE"); //default
                 }
                 
-                LdapGroupSyncLDAPUtils.destroyLdapContext(); //to pick latest config
+                ldapGroupSyncUtil.destroyLdapContext(); //to pick latest config
                 status = "Saved.";
             } else {
                 status = "Failed. Required fields are missing!";

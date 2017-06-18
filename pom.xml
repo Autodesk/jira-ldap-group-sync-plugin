@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.adsk.jira.ldapgroupsync.plugin</groupId>
     <artifactId>jira-ldap-group-sync-plugin</artifactId>
-    <version>5.0</version>
+    <version>6.0</version>
     <developers>
         <developer> 
             <name>Venkat Prasad</name> 
@@ -50,6 +50,12 @@
             <groupId>com.atlassian.activeobjects</groupId>
             <artifactId>activeobjects-plugin</artifactId>
             <version>${ao.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.sal</groupId>
+            <artifactId>sal-api</artifactId>
+            <version>2.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

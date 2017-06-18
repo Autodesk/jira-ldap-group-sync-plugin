@@ -1,14 +1,9 @@
 package com.adsk.jira.ldapgroupsync.plugin.api;
 
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncDAO;
-import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import com.atlassian.configurable.ObjectConfiguration;
 import com.atlassian.configurable.ObjectConfigurationException;
 import com.atlassian.jira.service.AbstractService;
 import org.apache.log4j.Logger;
-import com.adsk.jira.ldapgroupsync.plugin.impl.LdapGroupSyncAOMgrImpl;
-import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
-import java.util.List;
 
 public class LdapGroupSync extends AbstractService
 {
@@ -19,14 +14,14 @@ public class LdapGroupSync extends AbstractService
         long startTime = System.currentTimeMillis();        
         LOGGER.info("LDAP Group(s) Sync Service Started.");        
         
-        List<LdapGroupSyncMapBean> maps = LdapGroupSyncAOMgrImpl
+        /*List<LdapGroupSyncMapBean> maps = LdapGroupSyncAOMgrImpl
                 .getInstance().getSupportedGroupsMapProperties();
         
         for(LdapGroupSyncMapBean map : maps) {
             MessageBean message = LdapGroupSyncDAO.getInstance()
                     .sync(map.getLdapGroup(), map.getJiraGroup()); //Do Sync Here.
             LOGGER.debug(message.getMessage());
-        }
+        }*/
         
         long totalTime = System.currentTimeMillis() - startTime;
         LOGGER.info("Service Finished. Took "+ totalTime/ 1000d +" Seconds");
