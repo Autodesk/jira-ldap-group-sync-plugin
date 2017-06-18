@@ -22,22 +22,20 @@ import org.apache.log4j.Logger;
 public class LDAPGroupSyncPluginTask implements PluginJob {
     private static final Logger logger = Logger.getLogger(LDAPGroupSyncPluginTask.class);
     
-    public void execute(Map<String, Object> jobDataMap) {    
-        logger.info("LDAP Groups Sync Service Started.");
+    public void execute(Map<String, Object> jobDataMap) {
         
         final LDAPGroupSyncPluginSchedule sch = (LDAPGroupSyncPluginScheduleImpl) 
                 jobDataMap.get(LDAPGroupSyncPluginScheduleImpl.KEY);
         
         assert sch != null;
         
-        logger.debug("Time Interval: "+ sch.getInterval());
-        logger.debug("Last Run: "+ sch.getLastRun());        
-        sch.setLastRun(new Date());        
-        logger.debug("Next Run: "+ sch.getNextRun());
+        sch.setLastRun(new Date());
         
+        /**
+         * JRASERVER-29896
+         */
         final Thread currentThread = Thread.currentThread();
-        final ClassLoader origCCL = currentThread.getContextClassLoader();
-        
+        final ClassLoader origCCL = currentThread.getContextClassLoader();        
         currentThread.setContextClassLoader(LDAPGroupSyncPluginTask.class.getClass().getClassLoader());
         
         LDAPGroupSyncUtil syncUtil = sch.getLDAPGroupSyncUtil();
@@ -45,7 +43,6 @@ public class LDAPGroupSyncPluginTask implements PluginJob {
         
         try {               
             ctx = syncUtil.getLdapContext();
-            logger.debug("LDAP Connection Initialized.");
                         
             for(LdapGroupSyncMapBean bean : sch.getLdapGroupSyncAOMgr().getSupportedGroupsMapProperties()) {
                 MessageBean message = syncUtil.sync(ctx, bean.getLdapGroup(), bean.getJiraGroup());
@@ -58,7 +55,8 @@ public class LDAPGroupSyncPluginTask implements PluginJob {
             } catch (NamingException e) {
                 logger.error(e);
             }
-            currentThread.setContextClassLoader(origCCL);
+            
+            currentThread.setContextClassLoader(origCCL); //JRASERVER-29896
         }
     }
     

@@ -61,6 +61,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
     
     public LDAPGroupSyncUtilImpl(ApplicationProperties props, GroupManager groupManager, 
             UserManager userManager, UserUtil userUtil) {
+        
         this.props = props;
         this.groupManager = groupManager;
         this.userManager = userManager;
@@ -260,7 +261,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
                 if( appUser != null ) {
                     Group group = groupManager.getGroup(groupName);
                     userUtil.removeUserFromGroup(group, appUser);
-                    logger.info("Removed Jira user ("+userName+") from group ("+groupName+")");
+                    logger.debug("Removed Jira user ("+userName+") from group ("+groupName+")");
                 }
             } catch (PermissionException ex) {
                 logger.error(ex);
@@ -278,9 +279,9 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
                 if( appUser != null ) {
                     Group group = groupManager.getGroup(groupName);
                     userUtil.addUserToGroup(group, appUser);
-                    logger.info("Added Jira user ("+userName+") to group ("+groupName+")");
+                    logger.debug("Added Jira user ("+userName+") to group ("+groupName+")");
                 } else {
-                    logger.info("Jira User ("+userName+") does not exists.");
+                    logger.debug("Jira User ("+userName+") does not exists.");
                 }            
             } catch (PermissionException ex) {
                 logger.error(ex);
@@ -293,7 +294,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
     public void createJiraGroup(String groupName) {        
         try {            
             groupManager.createGroup(groupName);
-            logger.info("New Jira group ("+groupName+") created");
+            logger.debug("New Jira group ("+groupName+") created");
         } catch (OperationNotPermittedException ex) {
             logger.error(ex);
         } catch (InvalidGroupException ex) {
@@ -314,7 +315,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         
         Set<String> ldap_group_users = getGroupMembers(ctx, ldap_group);                
         if( ldap_group_users == null ) {
-            logger.warn("LDAP Group ("+ldap_group+") does not exists.");
+            logger.debug("LDAP Group ("+ldap_group+") does not exists.");
             message.setMessage("LDAP Group ("+ldap_group+") does not exists.");
             message.setStatus(1);
             

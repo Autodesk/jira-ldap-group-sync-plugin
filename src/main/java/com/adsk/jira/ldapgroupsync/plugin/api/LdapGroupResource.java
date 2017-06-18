@@ -15,6 +15,8 @@ import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.naming.NamingException;
+import javax.naming.ldap.LdapContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -117,14 +119,30 @@ public class LdapGroupResource {
             return Response.ok(messageBean).build();
         }
                 
-        MessageBean result = ldapGroupSyncUtil.sync(null, syncBean.getLdapGroup(), syncBean.getJiraGroup());
+        MessageBean result = null;        
+        LdapContext ctx = null;
         
-        long totalTime = System.currentTimeMillis() - startTime;
+        try {               
+            ctx = ldapGroupSyncUtil.getLdapContext();
+            
+            result = ldapGroupSyncUtil.sync(ctx, 
+                    syncBean.getLdapGroup(), syncBean.getJiraGroup());
+            
+            long totalTime = System.currentTimeMillis() - startTime;
         
-        logger.debug("["+loggedInAppUser.getUsername()+"] ["+ syncBean.getLdapGroup() +":"+ 
-                syncBean.getJiraGroup() +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+            logger.debug("["+loggedInAppUser.getUsername()+"] ["+ syncBean.getLdapGroup() +":"+ 
+                    syncBean.getJiraGroup() +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+
+            result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+            
+        } finally {
+            try {
+                if(ctx != null) ctx.close();
+            } catch (NamingException e) {
+                logger.error(e);
+            }
+        }
         
-        result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
         return Response.ok(result).build();
     }
     
@@ -158,15 +176,30 @@ public class LdapGroupResource {
             messageBean.setMessage("This JIRA group ("+ldapJiraGroup+") is mapped not to support. Skipping!");
             return Response.ok(messageBean).build();
         }
-                
-        MessageBean result = ldapGroupSyncUtil.sync(null, ldapJiraGroup, ldapJiraGroup);
         
-        long totalTime = System.currentTimeMillis() - startTime;
+        MessageBean result = null;        
+        LdapContext ctx = null;
         
-        logger.debug("Self Sync ["+loggedInAppUser.getUsername()+"] ["+ 
-                ldapJiraGroup +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+        try {               
+            ctx = ldapGroupSyncUtil.getLdapContext();
+            
+            result = ldapGroupSyncUtil.sync(ctx, ldapJiraGroup, ldapJiraGroup);
+            
+            long totalTime = System.currentTimeMillis() - startTime;
         
-        result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+            logger.debug("Self Sync ["+loggedInAppUser.getUsername()+"] ["+ 
+                    ldapJiraGroup +"] "+ result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+
+            result.setMessage(result.getMessage() +". Took "+ totalTime/ 1000d +" Seconds");
+            
+        } finally {
+            try {
+                if(ctx != null) ctx.close();
+            } catch (NamingException e) {
+                logger.error(e);
+            }
+        }        
+        
         return Response.ok(result).build();
     }
 }

@@ -15,10 +15,16 @@ import net.java.ao.Preload;
  */
 @Preload
 public interface LdapGroupSyncMap extends Entity {
+    
     public String getLdapGroup();
-    public void setLdapGroup(String ldapGroup);    
+    
+    public void setLdapGroup(String ldapGroup);
+    
     public String getJiraGroup();
+    
     public void setJiraGroup(String jiraGroup);
+    
     public boolean getSupport();
+    
     public void setSupport(boolean support);
 }

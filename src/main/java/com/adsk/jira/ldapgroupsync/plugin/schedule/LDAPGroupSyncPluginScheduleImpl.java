@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSchedule, LifecycleAware {
     private static final Logger logger = Logger.getLogger(LDAPGroupSyncPluginScheduleImpl.class);
     
-    private static final long DEFAULT_INTERVAL = 1L;
     private Date lastRun = null;
     
     private final ApplicationProperties applicationProperties;
@@ -41,17 +40,20 @@ public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSched
     }
     
     public long getInterval() {
-        long interval = 1;
+        long interval = 1L;
         try {
-            long sync_interval = Long.parseLong(applicationProperties.getString(LDAPGroupSyncPluginSchedule.SYNC_INTERVAL));
+            long sync_interval = Long.parseLong(applicationProperties
+                    .getString(LDAPGroupSyncPluginSchedule.SYNC_INTERVAL));
             if(sync_interval > 0) {
                 interval = sync_interval;
             }else{
-                interval = DEFAULT_INTERVAL;
+                interval = LDAPGroupSyncPluginSchedule.DEFAULT_INTERVAL;
             }
         } catch (NumberFormatException e) {
-            logger.debug("LDAP Group Sync interval property is null so using default - "+ DEFAULT_INTERVAL);
-            interval = DEFAULT_INTERVAL;
+            logger.debug("LDAP Group Sync interval property is null so using default: "+ 
+                    LDAPGroupSyncPluginSchedule.DEFAULT_INTERVAL);
+            
+            interval = LDAPGroupSyncPluginSchedule.DEFAULT_INTERVAL;
         }
         return interval;
     }
@@ -65,16 +67,16 @@ public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSched
         if(lastRun != null) {
             cal.setTime(lastRun);
         }
-        cal.add(Calendar.MILLISECOND, (int) TimeUnit.MINUTES.toMillis(1L));
+        cal.add(Calendar.MILLISECOND, (int) TimeUnit.HOURS.toMillis(getInterval()));
         return cal.getTime();
     }
 
     public void onStart() {
         /**
-         * Important place to Change minutes or hours 
+         * Important place to Change minutes or hours
          * conversion here.
          */
-        long time_interval = TimeUnit.MINUTES.toMillis(getInterval());
+        long time_interval = TimeUnit.HOURS.toMillis(getInterval());
                 
         pluginScheduler.scheduleJob(JOB_NAME,                   // unique name of the job
                 LDAPGroupSyncPluginTask.class,            // class of the job
@@ -83,7 +85,7 @@ public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSched
                 }},                    // data that needs to be passed to the job
                 getNextRun(),          // the time the job is to start
                 time_interval);             // interval between repeats, in milliseconds
-        logger.info(String.format("LDAP Groups Sync task scheduled to run every %dhrs", getInterval()));
+        logger.debug(String.format("LDAP Groups Sync task scheduled to run every %dhrs", getInterval()));
     }
 
     public void onStop() {

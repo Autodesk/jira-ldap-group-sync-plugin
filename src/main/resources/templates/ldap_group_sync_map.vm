@@ -8,6 +8,7 @@
     <script>
         AJS.$(document).ready(function(){
             if("$configId" != 0) {
+                AJS.$("#LdapGroupMapSchedule").stop().slideUp();
                 AJS.$("#LdapGroupMapAddEdit").stop().slideDown();
                 AJS.$("#LdapGroupMapDel").stop().slideUp();
                 AJS.$("#LdapGroupMapAddEditForm input[name='submitted']").val("SAVE");
@@ -20,10 +21,18 @@
         }
         
         function prepareDelete(configId) {
+            AJS.$("#LdapGroupMapSchedule").stop().slideUp();
             AJS.$("#LdapGroupMapDel").stop().slideDown();
             AJS.$("#LdapGroupMapAddEdit").stop().slideUp();            
             AJS.$("#LdapGroupMapDelForm input[name='configId']").val(configId);
             location.hash = "#LdapGroupMapDel";
+        }
+
+        function prepareSchedule() {
+            AJS.$("#LdapGroupMapDel").stop().slideUp();
+            AJS.$("#LdapGroupMapAddEdit").stop().slideUp();            
+            AJS.$("#LdapGroupMapSchedule").stop().slideDown();
+            location.hash = "#LdapGroupMapSchedule";
         }
     </script>
 </head>
@@ -33,6 +42,8 @@
 <span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.sync.maps.option.label")</span>
 <a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Configure-Automatic-Sync" target="_blank"
     class="adskldapsync_question" title="LDAP Group Sync Plugin Documentation"></a>
+<a href="#" class="adskldapsync_schedule" onClick="prepareSchedule()" 
+    title="Configure Sync Schedule"></a>
 </p>
 
 <!-- options ADD -->
@@ -86,7 +97,25 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="configId" name="configId" class="text" />
+</div>
+<div class="aui-buttons">
     <input class="aui-button" type="submit" name="submitted" value="DEL" />
+</div>
+</form>
+</div>
+
+<!-- Configure Schedule -->
+<div id="LdapGroupMapSchedule" style="display: none;">
+<form id="LdapGroupMapScheduleForm" class="aui" method="post" action="LdapGroupSyncMapAction.jspa" >
+<div class="field-group">
+    <label for="interval">
+        $i18n.getText("jira.ldap.group.configure.option.interval.label"):
+        <span class="aui-icon icon-required"></span>
+    </label>
+    <input type="number" id="interval" name="interval" class="text" min="1" value="$!interval" />
+</div>
+<div class="aui-buttons">
+    <input class="aui-button" type="submit" name="submitted" value="Schedule" />
 </div>
 </form>
 </div>

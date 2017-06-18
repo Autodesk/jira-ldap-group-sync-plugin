@@ -2,6 +2,8 @@ package com.adsk.jira.ldapgroupsync.plugin.web;
 
 import com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
+import com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncPluginSchedule;
+import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import java.text.MessageFormat;
@@ -16,12 +18,19 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(LdapGroupSyncMapAction.class);    
     private final LdapGroupSyncMapBean configBean = new LdapGroupSyncMapBean();
+    private long interval;
     private String submitted;
     private String status;
     
     private final LdapGroupSyncAOMgr ldapGroupAoMgr;
-    public LdapGroupSyncMapAction(LdapGroupSyncAOMgr ldapGroupAoMgr) {
+    private final LDAPGroupSyncPluginSchedule pluginSchedule;
+    private final ApplicationProperties properties;
+    
+    public LdapGroupSyncMapAction(LdapGroupSyncAOMgr ldapGroupAoMgr, 
+            LDAPGroupSyncPluginSchedule pluginSchedule, ApplicationProperties properties) {
         this.ldapGroupAoMgr = ldapGroupAoMgr;
+        this.pluginSchedule = pluginSchedule;
+        this.properties = properties;
     }
     
     @Override
@@ -71,6 +80,14 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                 status = "Config Config Id "+configBean.getConfigId()+" is not accepted!";
             }
         }
+        else if (this.submitted != null && "Schedule".equals(this.submitted)) {
+            LOGGER.debug("Re-Scheduling Sync with interval -> "+ interval);           
+            if(interval > 0) {
+                properties.setString(LDAPGroupSyncPluginSchedule.SYNC_INTERVAL, ""+interval);
+                status = "Re-scheduled Sync with interval: "+ interval;
+                pluginSchedule.reschedule();
+            }            
+        }
         else {
             if(configBean.getConfigId() > 0) {
                 LdapGroupSyncMapBean bean = ldapGroupAoMgr
@@ -80,6 +97,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                 configBean.setLdapGroup(bean.getLdapGroup());
                 configBean.setSupport(bean.isSupport());
             }
+            interval = pluginSchedule.getInterval();
         }
         return "success";
     }
@@ -115,6 +133,14 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     public void setSupport(boolean support) {
         configBean.setSupport(support);
     }
+
+    public long getInterval() {
+        return interval;
+    }
+
+    public void setInterval(long interval) {
+        this.interval = interval;
+    }        
     
     public List<LdapGroupSyncMapBean> getConfigList() {
         return ldapGroupAoMgr.getAllGroupsMapProperties();

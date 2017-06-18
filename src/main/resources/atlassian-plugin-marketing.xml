@@ -1,7 +1,6 @@
 <atlassian-plugin-marketing>
     <screenshots>
         <screenshot image="images/ldapgroupsync_setup.PNG"/>
-        <screenshot image="images/ldapgroupsync_service.PNG"/>
         <screenshot image="images/ldapgroupsync_map.PNG"/>
         <screenshot image="images/ldapgroupsync_run.PNG"/>
     </screenshots>

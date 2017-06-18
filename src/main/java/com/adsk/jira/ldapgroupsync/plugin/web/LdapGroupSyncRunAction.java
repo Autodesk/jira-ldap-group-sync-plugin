@@ -77,7 +77,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
                             } catch (NamingException e) {
                                 logger.error(e);
                             }
-                        }                                                
+                        }
                     }
                     
                 } else {
