@@ -139,7 +139,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
                 }
             }
         } catch (NamingException e) {
-            logger.error(e.getLocalizedMessage());
+            logger.error(e);
         }
         return groups;
     }

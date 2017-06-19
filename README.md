@@ -1,4 +1,6 @@
-# LDAP Group(s) Sync For JIRA Plugin
+![LDAP Groups Sync for JIRA](https://raw.githubusercontent.com/Autodesk/jira-ldap-group-sync-plugin/master/src/main/resources/images/passing.png)
 
-* [Plugin Documentation](https://git.autodesk.com/EngOps/jira-ldap-group-sync-plugin/wiki/Home)
+# LDAP Groups Sync For JIRA Plugin
+
+* [Plugin Documentation](https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Home)
 * [Contributing](Contributing.md)
