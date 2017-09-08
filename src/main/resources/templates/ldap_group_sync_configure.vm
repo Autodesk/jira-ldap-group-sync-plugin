@@ -107,7 +107,7 @@
 </div>
 
 <!--<div class="aui-buttons">
-    <input class="aui-button" type="button" name="edit" value="Edit &uarr;" onClick="prepareEdit();" /> 
+    <input class="aui-button aui-button-primary" type="button" name="edit" value="Edit &uarr;" onClick="prepareEdit();" /> 
 </div>-->
 </form>
 </div>
@@ -202,7 +202,7 @@
 </div>
 
 <div class="aui-buttons">
-    <input class="aui-button" type="submit" name="submitted" value="Save &rarr; Initialize" />
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Save &rarr; Initialize" />
     <input class="aui-button" type="reset" name="reset" value="Reset" />
     <input class="aui-button" type="button" name="cancel" value="Cancel" onClick="prepareCancel();" />
 </div>

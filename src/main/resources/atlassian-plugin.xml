@@ -80,6 +80,7 @@
           </action>
         </actions>
     </webwork1>
+    
     <web-item key="jira-ldap-group-sync-confgure-item" name="JIRA LDAP Group Sync Configure Admin" 
         i18n-name-key="jira-ldap-group-sync-configure-item.name"
         section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
@@ -100,6 +101,7 @@
           </action>
         </actions>
     </webwork1>
+    
     <web-item key="jira-ldap-group-sync-map-item" name="JIRA LDAP Group Sync Map Admin" 
         i18n-name-key="jira-ldap-group-sync-map-item.name"
         section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
@@ -120,13 +122,4 @@
           </action>
         </actions>
     </webwork1>
-    <web-item key="jira-ldap-group-sync-run-item" name="JIRA LDAP Group Sync Run Admin" 
-        i18n-name-key="jira-ldap-group-sync-run-item.name"
-        section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
-        <label key="jira.ldap.group.sync.run.label" />
-        <link linkId="jira-ldap-group-run-link">/secure/LdapGroupSyncRunAction.jspa</link>
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-	    <param name="permission">admin</param>
-	</condition>
-    </web-item>
 </atlassian-plugin>

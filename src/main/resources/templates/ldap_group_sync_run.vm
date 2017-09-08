@@ -14,6 +14,10 @@
 
 
 <p>
+    <a class="aui-button" href="/secure/LdapGroupSyncMapAction.jspa">Go Back</a>
+<p>
+
+<p>
 <span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.sync.run.option.label")</span>
 <a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Run-On-demand-Sync" target="_blank"
     class="adskldapsync_question" title="LDAP On-demand Group Sync Documentation"></a>
@@ -40,7 +44,7 @@
 </div>
 
 <div class="aui-buttons">
-    <input class="aui-button" type="submit" name="submitted" value="Run &rarr;" onClick="prepareRun();"/>
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Run &rarr;" onClick="prepareRun();"/>
 </div>
 </form>
 </div>

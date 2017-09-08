@@ -29,6 +29,19 @@
     background-position: 50% 50%;
 }
 
+.adskldapsync_run {
+    background-image: url('images/play.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    float: right;
+    margin-left: 5px;
+    vertical-align: middle;
+    background-position: 50% 50%;
+}
+
 .adskldapsync_recache {
     background-image: url('images/cache.gif');
     background-repeat: no-repeat;
@@ -104,19 +117,18 @@
     float: right;
     border-radius: 3px;
     background-color: green;
-    height: 15px;
+    padding: 2px;
     color: #fff;
-    padding: 5px;
-    margin: 2px;
 }
 
 .adskldapsyncconfig_search_div {
     border-radius: 2px;
     display: inline;
-    float: right;
-    margin: 2px;
+    /*float: right;*/
 }
 
 .adskldapsyncconfig_search_div input {    
-    height: 20px;
+    height: 16px;
+    padding: 2px;
+    width: 250px;
 }

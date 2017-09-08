@@ -42,6 +42,9 @@
 <span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.sync.maps.option.label")</span>
 <a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Configure-Automatic-Sync" target="_blank"
     class="adskldapsync_question" title="LDAP Group Sync Plugin Documentation"></a>
+
+<a class="adskldapsync_run" href="/secure/LdapGroupSyncRunAction.jspa" title="Run On-demand LDAP and JIRA Group Sync"></a>
+
 <a href="#" class="adskldapsync_schedule" onClick="prepareSchedule()" 
     title="Configure Sync Schedule"></a>
 </p>
@@ -57,8 +60,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
-        placeholder="Your LDAP Group Name" value="$!ldapGroup" />
-    <div class="description">$i18n.getText("jira.ldap.group.configure.option.ldap_group.description")</div>
+        placeholder="Enter distribution email list alias or LDAP security group name" value="$!ldapGroup" />
 </div>
 <div class="field-group">
     <label for="jira_group">
@@ -82,7 +84,7 @@
     </select>
 </div>
 <div class="aui-buttons">
-    <input class="aui-button" type="submit" name="submitted" value="ADD" />
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="ADD" />
 </div>
 </form>
 </div>
@@ -99,7 +101,7 @@
     <input type="text" id="configId" name="configId" class="text" />
 </div>
 <div class="aui-buttons">
-    <input class="aui-button" type="submit" name="submitted" value="DEL" />
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="DEL" />
 </div>
 </form>
 </div>
@@ -115,7 +117,7 @@
     <input type="number" id="interval" name="interval" class="text" min="1" value="$!interval" />
 </div>
 <div class="aui-buttons">
-    <input class="aui-button" type="submit" name="submitted" value="Schedule" />
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Schedule" />
 </div>
 </form>
 </div>
@@ -124,10 +126,12 @@
 <!-- config status -->
 <p id="LdapGroupSyncStatus" style="background-color:#E0FFFF;">$!status</p>
 
+<p>
 <span class="adskldapsyncconfig_count_span">Count &diams; <span id="adskldapsyncconfig_count">$configList.size()</span></span>
 <div class="adskldapsyncconfig_search_div">
     <input type="text" id="adskldapsyncconfig_search" placeholder=" Search" onkeyup="adskldapsyncconfig_filter(this)" />
 </div>
+</p>
 
 <!-- config display -->
 
