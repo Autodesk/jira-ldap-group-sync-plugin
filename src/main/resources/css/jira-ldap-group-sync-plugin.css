@@ -29,8 +29,34 @@
     background-position: 50% 50%;
 }
 
+.adskldapsync_add {
+    background-image: url('images/add.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    float: right;
+    margin-left: 5px;
+    vertical-align: middle;
+    background-position: 50% 50%;
+}
+
 .adskldapsync_run {
     background-image: url('images/play.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    float: right;
+    margin-left: 5px;
+    vertical-align: middle;
+    background-position: 50% 50%;
+}
+
+.adskldapsync_run_all {
+    background-image: url('images/play_all.png');
     background-repeat: no-repeat;
     background-size: 100%;
     height: 24px;

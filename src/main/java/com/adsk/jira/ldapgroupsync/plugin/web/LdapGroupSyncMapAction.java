@@ -54,7 +54,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                         configBean.getLdapGroup(), configBean.getJiraGroup());
             }
         }
-        else if (this.submitted != null && "SAVE".equals(this.submitted)) {            
+        else if (this.submitted != null && "Save".equals(this.submitted)) {            
             LOGGER.debug("Saving groups map -> "+ configBean.getLdapGroup() +":"+
                     configBean.getJiraGroup()+":"+ configBean.getConfigId());
             if(ldapGroupAoMgr.findGroupsMapProperty2(configBean) == false) {
@@ -71,7 +71,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
                         configBean.getLdapGroup(), configBean.getJiraGroup());
             }
         }
-        else if (this.submitted != null && "DEL".equals(this.submitted)) {
+        else if (this.submitted != null && "DELETE".equals(this.submitted)) {
             LOGGER.debug("Deleting groups Config map Id -> "+ configBean.getConfigId());           
             if(configBean.getConfigId() > 0) {
                 ldapGroupAoMgr.removeGroupsMapProperty(configBean.getConfigId());
@@ -89,14 +89,6 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
             }            
         }
         else {
-            if(configBean.getConfigId() > 0) {
-                LdapGroupSyncMapBean bean = ldapGroupAoMgr
-                        .getGroupsMapProperty(configBean.getConfigId());
-                configBean.setConfigId(bean.getConfigId());
-                configBean.setJiraGroup(bean.getJiraGroup());
-                configBean.setLdapGroup(bean.getLdapGroup());
-                configBean.setSupport(bean.isSupport());
-            }
             interval = pluginSchedule.getInterval();
         }
         return "success";

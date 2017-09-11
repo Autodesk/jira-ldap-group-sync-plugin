@@ -5,6 +5,7 @@ import com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncBean;
+import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.adsk.jira.ldapgroupsync.plugin.model.MessageBean;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,8 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
     
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(LdapGroupSyncRunAction.class);
-    private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();    
+    private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();
+    private boolean runAll;
     private String submitted;
     private String status;
     
@@ -88,6 +90,24 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
                 status = "Failed. Required fields are missing!";
             }
             
+        } else if(runAll == true) {
+            status = "Triggered ALL LDAP and JIRA Groups Sync..";
+            LdapContext ctx = null;
+            try {               
+                ctx = ldapGroupSyncUtil.getLdapContext();
+                for(LdapGroupSyncMapBean bean : ldapGroupSyncMgr.getSupportedGroupsMapProperties()) {
+                    MessageBean message = ldapGroupSyncUtil.sync(ctx, bean.getLdapGroup(), bean.getJiraGroup());
+                    logger.debug(message.getMessage());
+                }
+            } catch (Exception e) {
+                status = "There are few LDAP and JIRA Groups Sync failures. "+ e.getLocalizedMessage();
+            } finally {
+                try {
+                    if(ctx != null) ctx.close();
+                } catch (NamingException e) {
+                    logger.error(e);
+                }
+            }
         }
         return "success";
     }
@@ -106,6 +126,14 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
 
     public void setJiraGroup(String jiraGroup) {
         configBean.setJiraGroup(jiraGroup);
+    }
+    
+    public boolean isRunAll() {
+        return runAll;
+    }
+
+    public void setRunAll(boolean runAll) {
+        this.runAll = runAll;
     }
     
     public void setSubmitted(String submitted) {
