@@ -4,7 +4,6 @@
     <title>$i18n.getText("jira.ldap.group.sync.maps.option.label")</title>
     <meta name="decorator" content="atl.admin" />
     $webResourceManager.requireResource("com.adsk.jira.ldapgroupsync.plugin.jira-ldap-group-sync-plugin:jira-ldap-group-sync-plugin-resources")
-    <meta name="configId" content="$textutils.htmlEncode($action.configId)"/>
     <script>
         function prepareAdd() {
             AJS.$("#AdskLDAPGroupMapSchedule").stop().slideUp();
@@ -53,13 +52,13 @@
 <a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Configure-Automatic-Sync" target="_blank"
     class="adskldapsync_question" title="LDAP Group Sync Plugin Documentation"></a>
 
+<a href="#" class="adskldapsync_schedule" onClick="prepareSchedule()" 
+    title="Configure Sync Schedule"></a>
+
 <a class="adskldapsync_add" href="#" onClick="prepareAdd()" 
     title="Add New LDAP Group Auto Sync Map"></a>
 
 <a class="adskldapsync_run" href="/secure/LdapGroupSyncRunAction.jspa" title="Run On-demand LDAP and JIRA Group Sync"></a>
-
-<a href="#" class="adskldapsync_schedule" onClick="prepareSchedule()" 
-    title="Configure Sync Schedule"></a>
 </p>
 
 <!-- options ADD -->
