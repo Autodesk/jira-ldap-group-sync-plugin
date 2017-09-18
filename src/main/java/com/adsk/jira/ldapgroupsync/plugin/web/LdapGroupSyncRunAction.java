@@ -21,7 +21,6 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(LdapGroupSyncRunAction.class);
     private final LdapGroupSyncBean configBean = new LdapGroupSyncBean();
-    private boolean runAll;
     private String submitted;
     private String status;
     
@@ -46,7 +45,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
             return "error";
         }
         
-        if (this.submitted != null) {
+        if (this.submitted != null && "Run".equals(this.submitted)) {
             String ldapGroup = configBean.getLdapGroup();
             String jiraGroup = configBean.getJiraGroup();
             
@@ -90,7 +89,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
                 status = "Failed. Required fields are missing!";
             }
             
-        } else if(runAll == true) {
+        } else if(this.submitted != null && "Confirm".equals(this.submitted)) {
             status = "Triggered ALL LDAP and JIRA Groups Sync..";
             LdapContext ctx = null;
             try {               
@@ -126,14 +125,6 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
 
     public void setJiraGroup(String jiraGroup) {
         configBean.setJiraGroup(jiraGroup);
-    }
-    
-    public boolean isRunAll() {
-        return runAll;
-    }
-
-    public void setRunAll(boolean runAll) {
-        this.runAll = runAll;
     }
     
     public void setSubmitted(String submitted) {

@@ -4,10 +4,14 @@
     <title>$i18n.getText("jira.ldap.group.sync.run.option.label")</title>
     <meta name="decorator" content="atl.admin" />
     $webResourceManager.requireResource("com.adsk.jira.ldapgroupsync.plugin.jira-ldap-group-sync-plugin:jira-ldap-group-sync-plugin-resources")
-    <meta name="runAll" content="$action.runAll"/>
     <script>
+        function prepareRunAll() {
+            AJS.$("#ldapGroupSyncRun").stop().slideUp();
+            AJS.$("#ldapGroupSyncRunConfirm").stop().slideDown();
+        }
         function prepareRun() {
-            AJS.$("#runStatus").html("Running").stop().show();
+            AJS.$("#ldapGroupSyncRunConfirm").stop().slideUp();
+            AJS.$("#ldapGroupSyncRun").stop().slideDown();
         }
     </script>
 </head>
@@ -22,8 +26,12 @@
 <span class="adskldapsync_heading">$i18n.getText("jira.ldap.group.sync.run.option.label")</span>
 <a href="https://github.com/Autodesk/jira-ldap-group-sync-plugin/wiki/Run-On-demand-Sync" target="_blank"
     class="adskldapsync_question" title="LDAP On-demand Group Sync Documentation"></a>
-<a class="adskldapsync_run_all" href="/secure/LdapGroupSyncRunAction.jspa?runAll=true" 
+
+<a class="adskldapsync_run_all" href="#" onClick="prepareRunAll()" 
     title="Run ALL LDAP and JIRA Groups Sync"></a>
+
+<a class="adskldapsync_run" href="#" onClick="prepareRun()" 
+    title="Run Ondemand LDAP and JIRA Groups Sync"></a>
 </p>
 
 <div id="ldapGroupSyncRun">
@@ -47,14 +55,26 @@
 </div>
 
 <div class="aui-buttons">
-    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Run &rarr;" onClick="prepareRun();"/>
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Run"/>
+</div>
+</form>
+</div>
+
+
+<div id="ldapGroupSyncRunConfirm" style="display: none;">
+<form id="admin" class="aui" method="post" action="/secure/LdapGroupSyncRunAction.jspa" >
+<p class="aui-message">Confirm to trigger sync for all the auto sync group mappings!</p>
+<div class="aui-buttons">
+    <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Confirm"/>
 </div>
 </form>
 </div>
 
 
 <!-- config status -->
-<p id="runStatus" style="background-color:#E0FFFF;">$!status</p>
+#if( $!status )
+    <p class="aui-message">$!status</p>
+#end
 
 </body>
 </html>

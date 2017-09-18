@@ -186,7 +186,9 @@
 
 
 <!-- config status -->
-<p id="AdskLDAPGroupSyncStatus" style="background-color:#E0FFFF;">$!status</p>
+#if( $!status )
+    <p class="aui-message">$!status</p>
+#end
 
 <p>
 <span class="adskldapsyncconfig_count_span">Count &diams; <span id="adskldapsyncconfig_count">$configList.size()</span></span>
@@ -197,11 +199,11 @@
 
 <!-- config display -->
 
-<div id="ldapGroupMapDisplay">
 <table id="adskldapsync_configs" class="aui">
     <tr><th>Config ID</th><th>LDAP Group Name</th><th>JIRA Group Name</th><th>Active?</th><th></th></tr>
     #foreach ($entry in $configList)
-        <tr><td>$entry.configId</td><td>$entry.ldapGroup</td><td>$entry.jiraGroup</td><td>$entry.support</td>
+        <tr>
+        <td>$entry.configId</td><td>$entry.ldapGroup</td><td>$entry.jiraGroup</td><td>$entry.support</td>
         <td>
             <a class="adskldapsync_edit" title="Edit Map Configuration" href="#"
                 onClick="prepareEdit('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)', 
@@ -211,10 +213,8 @@
                         '$textutils.htmlEncode($entry.jiraGroup)')"></a>
         </td>        
         </tr>
-    #end
+    #end    
 </table>
-</div>
-
 
 </body>
 </html>
