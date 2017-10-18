@@ -28,20 +28,19 @@
         <interface>com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr</interface>
     </component>
     
-    <component-import key="pluginScheduler" name="LDAP Groups Sync Plugin Scheduler">
-        <interface>com.atlassian.sal.api.scheduling.PluginScheduler</interface>
-    </component-import>
+    <component key="jira-ldap-group-sync-scheduler-runner" name="LDAP Groups Sync Schedule Runner" 
+               class="com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncSchedulerJobRunnerImpl" public="true">
+        <interface>com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncSchedulerJobRunner</interface>
+    </component>
     
+    <component-import key="userManager" interface="com.atlassian.sal.api.user.UserManager" />
+    <component-import key="schedulerService" interface="com.atlassian.scheduler.SchedulerService" />
     <component key="jira-ldap-group-sync-scheduler" name="LDAP Groups Sync Plugin Scheduler Manager" 
                class="com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncPluginScheduleImpl" 
                system="true" public="true">        
         <interface>com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncPluginSchedule</interface>
         <interface>com.atlassian.sal.api.lifecycle.LifecycleAware</interface>
     </component>
-    
-    <component-import key="userManager" name="User Manager">
-          <interface>com.atlassian.sal.api.user.UserManager</interface>
-     </component-import>
     
     <rest key="jira-ldap-group-sync-rest-resource" name="LDAP Groups Sync REST API" 
         path="/ldapgroupsync" version="1.0">
@@ -55,7 +54,7 @@
         <resource type="download" name="images/" location="/images"/>
         <context>jira-ldap-group-sync-plugin</context>
     </web-resource>
-    
+          
     <!-- Active Objects -->
     <component-import key="ao" name="LDAP Groups Sync Active Objects service" 
         interface="com.atlassian.activeobjects.external.ActiveObjects">

@@ -5,14 +5,16 @@
  */
 package com.adsk.jira.ldapgroupsync.plugin.schedule;
 
-import com.adsk.jira.ldapgroupsync.plugin.api.LDAPGroupSyncUtil;
-import com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.sal.api.lifecycle.LifecycleAware;
-import com.atlassian.sal.api.scheduling.PluginScheduler;
-import java.util.Calendar;
+import com.atlassian.scheduler.SchedulerService;
+import com.atlassian.scheduler.SchedulerServiceException;
+import com.atlassian.scheduler.config.JobConfig;
+import com.atlassian.scheduler.config.JobId;
+import com.atlassian.scheduler.config.JobRunnerKey;
+import com.atlassian.scheduler.config.RunMode;
+import com.atlassian.scheduler.config.Schedule;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
@@ -21,91 +23,84 @@ import org.apache.log4j.Logger;
  * @author prasadve
  */
 public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSchedule, LifecycleAware {
-    private static final Logger logger = Logger.getLogger(LDAPGroupSyncPluginScheduleImpl.class);
-    
-    private Date lastRun = null;
-    
+    private static final Logger logger = Logger.getLogger(LDAPGroupSyncPluginScheduleImpl.class);    
     private final ApplicationProperties applicationProperties;
-    private final PluginScheduler pluginScheduler;  // provided by SAL    
-    private final LdapGroupSyncAOMgr ldapGroupSyncMgr;
-    private final LDAPGroupSyncUtil ldapGroupSyncUtil;
+    private final SchedulerService schedulerService;   
+    private final LDAPGroupSyncSchedulerJobRunner schedulerJobRunner;
     
     public LDAPGroupSyncPluginScheduleImpl(ApplicationProperties applicationProperties, 
-            PluginScheduler pluginScheduler, LdapGroupSyncAOMgr ldapGroupAoMgr, 
-            LDAPGroupSyncUtil ldapGroupSyncUtil) {
+            SchedulerService schedulerService, LDAPGroupSyncSchedulerJobRunner schedulerJobRunner) {
         this.applicationProperties = applicationProperties;
-        this.pluginScheduler = pluginScheduler;
-        this.ldapGroupSyncMgr = ldapGroupAoMgr;
-        this.ldapGroupSyncUtil = ldapGroupSyncUtil;
+        this.schedulerService = schedulerService;
+        this.schedulerJobRunner = schedulerJobRunner;
     }
     
     public long getInterval() {
         long interval = 1L;
         try {
             long sync_interval = Long.parseLong(applicationProperties
-                    .getString(LDAPGroupSyncPluginSchedule.SYNC_INTERVAL));
+                    .getString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL));
             if(sync_interval > 0) {
                 interval = sync_interval;
             }else{
-                interval = LDAPGroupSyncPluginSchedule.DEFAULT_INTERVAL;
+                interval = LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
             }
         } catch (NumberFormatException e) {
+            logger.error(e);
             logger.debug("LDAP Group Sync interval property is null so using default: "+ 
-                    LDAPGroupSyncPluginSchedule.DEFAULT_INTERVAL);
+                    LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL);
             
-            interval = LDAPGroupSyncPluginSchedule.DEFAULT_INTERVAL;
+            interval = LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
         }
         return interval;
     }
-    
-    public Date getLastRun() {
-        return this.lastRun;
-    }
-    
-    public Date getNextRun() {
-        Calendar cal = Calendar.getInstance();
-        if(lastRun != null) {
-            cal.setTime(lastRun);
-        }
-        cal.add(Calendar.MILLISECOND, (int) TimeUnit.HOURS.toMillis(getInterval()));
-        return cal.getTime();
+
+    private JobId getJobId() {    
+      return JobId.of(LDAPGroupSyncPluginSchedule.class.getName() + ".job");
     }
 
+    private JobRunnerKey getJobRunnerKey() {    
+      return JobRunnerKey.of(LDAPGroupSyncPluginSchedule.class.getName() + ".scheduler");
+    }
+    
     public void onStart() {
         /**
          * Important place to Change minutes or hours
          * conversion here.
          */
-        long time_interval = TimeUnit.HOURS.toMillis(getInterval());
+        long interval = getInterval();
+        long time_interval = TimeUnit.HOURS.toMillis(interval);
                 
-        pluginScheduler.scheduleJob(JOB_NAME,                   // unique name of the job
-                LDAPGroupSyncPluginTask.class,            // class of the job
-                new HashMap<String,Object>() {{
-                    put(LDAPGroupSyncPluginSchedule.KEY, LDAPGroupSyncPluginScheduleImpl.this);
-                }},                    // data that needs to be passed to the job
-                getNextRun(),          // the time the job is to start
-                time_interval);             // interval between repeats, in milliseconds
-        logger.debug(String.format("LDAP Groups Sync task scheduled to run every %dhrs", getInterval()));
+        if (!this.schedulerService.getRegisteredJobRunnerKeys().contains(getJobRunnerKey())) {        
+          logger.debug("Registering JobRunner - "+ getJobRunnerKey().toString());
+          this.schedulerService.registerJobRunner(getJobRunnerKey(), this.schedulerJobRunner);
+        }
+        
+        schedulerJobRunner.setLastRun(new Date()); //set current date time as last execution.
+        
+        Date start =  new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(interval));
+        Schedule schedule = Schedule.forInterval(time_interval, start);
+        JobConfig jobConfig = JobConfig.forJobRunnerKey(getJobRunnerKey())
+                .withRunMode(RunMode.RUN_ONCE_PER_CLUSTER).withSchedule(schedule);
+        try {        
+          logger.debug("Scheduling the LDAP Group Sync Job "+ getJobRunnerKey().toString() +" with "+ 
+                  jobConfig);
+          
+          this.schedulerService.scheduleJob(getJobId(), jobConfig);
+        }
+        catch (SchedulerServiceException e) {        
+          logger.error("Failed to schedule the Okta Group Sync Job! ", e);
+        }
+        logger.debug(String.format("LDAP Group Sync task scheduled to run every %dhrs", getInterval()));
     }
 
     public void onStop() {
-        this.pluginScheduler.unscheduleJob(JOB_NAME);
+        this.schedulerService.unscheduleJob(getJobId());
+        this.schedulerService.unregisterJobRunner(getJobRunnerKey());
     }
     
     public void reschedule() {
         onStop();
         onStart();
-    }
-
-    public void setLastRun(Date lastRun) {
-        this.lastRun = lastRun;
-    }
-    
-    public LDAPGroupSyncUtil getLDAPGroupSyncUtil() {
-        return ldapGroupSyncUtil;
-    }
-    
-    public LdapGroupSyncAOMgr getLdapGroupSyncAOMgr() {
-        return ldapGroupSyncMgr;
     }
 }

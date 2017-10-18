@@ -3,6 +3,7 @@ package com.adsk.jira.ldapgroupsync.plugin.web;
 import com.adsk.jira.ldapgroupsync.plugin.api.LdapGroupSyncAOMgr;
 import com.adsk.jira.ldapgroupsync.plugin.model.LdapGroupSyncMapBean;
 import com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncPluginSchedule;
+import com.adsk.jira.ldapgroupsync.plugin.schedule.LDAPGroupSyncSchedulerJobRunner;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.permission.GlobalPermissionKey;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
@@ -83,7 +84,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
         else if (this.submitted != null && "Schedule".equals(this.submitted)) {
             LOGGER.debug("Re-Scheduling Sync with interval -> "+ interval);           
             if(interval > 0) {
-                properties.setString(LDAPGroupSyncPluginSchedule.SYNC_INTERVAL, ""+interval);
+                properties.setString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL, ""+interval);
                 status = "Re-scheduled Sync with interval: "+ interval;
                 pluginSchedule.reschedule();
             }            
