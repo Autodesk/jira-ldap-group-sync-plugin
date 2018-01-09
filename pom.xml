@@ -7,12 +7,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.adsk.jira.ldapgroupsync.plugin</groupId>
     <artifactId>jira-ldap-group-sync-plugin</artifactId>
-    <version>6.4</version>
+    <version>6.5</version>
     <developers>
         <developer> 
             <name>Venkat Prasad</name> 
             <email>scmenthusiast@gmail.com</email>
-            <url>www.saffrontree.in</url> 
         </developer> 
     </developers>
     <organization>
