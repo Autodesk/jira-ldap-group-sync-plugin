@@ -193,7 +193,7 @@
 <p>
 <span class="adskldapsyncconfig_count_span">Count &diams; <span id="adskldapsyncconfig_count">$configList.size()</span></span>
 <div class="adskldapsyncconfig_search_div">
-    <input type="text" id="adskldapsyncconfig_search" placeholder=" Search" onkeyup="adskldapsyncconfig_filter(this)" />
+    <input type="text" id="adskldapsyncconfig_search" placeholder=" Search" onkeyup="adskldapsyncconfig_filter();" />
 </div>
 </p>
 
@@ -213,7 +213,7 @@
                         '$textutils.htmlEncode($entry.jiraGroup)')"></a>
         </td>        
         </tr>
-    #end    
+    #end
 </table>
 
 </body>
