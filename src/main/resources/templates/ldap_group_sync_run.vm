@@ -19,7 +19,7 @@
 
 
 <p>
-    <a class="aui-button" href="/secure/LdapGroupSyncMapAction.jspa">Go Back</a>
+    <a class="aui-button" href="LdapGroupSyncMapAction.jspa">Back to Manage LDAP Group Sync</a>
 <p>
 
 <p>

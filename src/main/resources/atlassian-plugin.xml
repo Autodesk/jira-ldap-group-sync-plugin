@@ -68,7 +68,17 @@
         location="admin_plugins_menu" i18n-name-key="jira-ldap-group-sync.section" weight="20" application="jira">
         <label key="jira.ldap.group.sync.section.label" />
     </web-section>
-      
+    
+    <web-item key="jira-ldap-group-sync-confgure-item" name="JIRA LDAP Group Sync Configure Admin" 
+        i18n-name-key="jira-ldap-group-sync-configure-item.name"
+        section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
+        <label key="jira.ldap.group.sync.configure.label" />
+        <link linkId="jira-ldap-group-sync-configure-link">/secure/LdapGroupSyncMapAction.jspa</link>
+        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+	    <param name="permission">admin</param>
+	</condition>
+    </web-item>
+    
     <webwork1 key="jira-ldap-group-sync-configure-action" name="JIRA LDAP Group Sync Configure Action" 
         i18n-name-key="jira-ldap-group-sync-configure-action.name">
         <actions>
@@ -78,17 +88,7 @@
             <view name="error">/secure/views/permissionviolation.jsp</view>
           </action>
         </actions>
-    </webwork1>
-    
-    <web-item key="jira-ldap-group-sync-confgure-item" name="JIRA LDAP Group Sync Configure Admin" 
-        i18n-name-key="jira-ldap-group-sync-configure-item.name"
-        section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
-        <label key="jira.ldap.group.sync.configure.label" />
-        <link linkId="jira-ldap-group-sync-configure-link">/secure/LdapGroupSyncConfigAction.jspa</link>
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-	    <param name="permission">admin</param>
-	</condition>
-    </web-item>
+    </webwork1>       
            
     <webwork1 key="jira-ldap-group-sync-map-action" name="JIRA LDAP Group Sync Action" 
         i18n-name-key="jira-ldap-group-sync-map-action.name">
@@ -100,16 +100,6 @@
           </action>
         </actions>
     </webwork1>
-    
-    <web-item key="jira-ldap-group-sync-map-item" name="JIRA LDAP Group Sync Map Admin" 
-        i18n-name-key="jira-ldap-group-sync-map-item.name"
-        section="admin_plugins_menu/jira-ldap-group-sync-section" weight="10" application="jira">
-        <label key="jira.ldap.group.sync.maps.label" />
-        <link linkId="jira-ldap-group-sync-link">/secure/LdapGroupSyncMapAction.jspa</link>
-        <condition class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
-	    <param name="permission">admin</param>
-	</condition>
-    </web-item>
     
     <webwork1 key="jira-ldap-group-sync-run-action" name="JIRA LDAP Group Sync Run Action" 
         i18n-name-key="jira-ldap-group-sync-run-action.name">
