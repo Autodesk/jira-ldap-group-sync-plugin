@@ -26,24 +26,9 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
 
     public ActiveObjects getActiveObjects() {
         return this.ao;
-    }
+    }        
     
-    public List<LdapGroupSyncMapBean> getSupportedGroupsMapProperties() {
-        final LdapGroupSyncMap[] maps = getActiveObjects()
-                .find(LdapGroupSyncMap.class, Query.select().where("SUPPORT = ?", true));
-        List<LdapGroupSyncMapBean> configList = new ArrayList<LdapGroupSyncMapBean>();
-        for(LdapGroupSyncMap map : maps){
-            LdapGroupSyncMapBean bean = new LdapGroupSyncMapBean();
-            bean.setConfigId(map.getID());
-            bean.setLdapGroup(map.getLdapGroup());
-            bean.setJiraGroup(map.getJiraGroup());
-            bean.setSupport(map.getSupport());
-            configList.add(bean);
-        }
-        return configList;
-    }
-    
-    public List<LdapGroupSyncMapBean> getAllGroupsMapProperties() {        
+    public List<LdapGroupSyncMapBean> getGroupsMapProperties() {        
         final LdapGroupSyncMap[] maps = getActiveObjects()
                 .find(LdapGroupSyncMap.class, Query.select());        
         List<LdapGroupSyncMapBean> configList = new ArrayList<LdapGroupSyncMapBean>();
@@ -52,7 +37,6 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
             bean.setConfigId(map.getID());
             bean.setLdapGroup(map.getLdapGroup());
             bean.setJiraGroup(map.getJiraGroup());
-            bean.setSupport(map.getSupport());
             configList.add(bean);
         }
         return configList;
@@ -62,7 +46,6 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
         final LdapGroupSyncMap map = ao.create(LdapGroupSyncMap.class);
         map.setLdapGroup(configBean.getLdapGroup());
         map.setJiraGroup(configBean.getJiraGroup());
-        map.setSupport(configBean.isSupport());
         map.save();
     }
     
@@ -73,7 +56,6 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
             final LdapGroupSyncMap map = maps[0];
             map.setLdapGroup(configBean.getLdapGroup());
             map.setJiraGroup(configBean.getJiraGroup());
-            map.setSupport(configBean.isSupport());
             map.save();
         }
     }
@@ -100,12 +82,6 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
             ao.delete(map);
         }
     }
-    
-    public boolean isJiraGroupNotInSupport(String jiraGroup) {
-        final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, Query.select()
-                .where("JIRA_GROUP = ? AND SUPPORT = ?", jiraGroup, false));
-        return maps.length > 0;
-    }
 
     public LdapGroupSyncMapBean getGroupsMapProperty(long configId) {
         final LdapGroupSyncMap[] maps = ao.find(LdapGroupSyncMap.class, Query.select().where("ID = ?", configId));
@@ -115,7 +91,6 @@ public class LdapGroupSyncAOMgrImpl implements LdapGroupSyncAOMgr {
             bean.setConfigId(map.getID());
             bean.setLdapGroup(map.getLdapGroup());
             bean.setJiraGroup(map.getJiraGroup());
-            bean.setSupport(map.getSupport());
             return bean;
         }
         return null;

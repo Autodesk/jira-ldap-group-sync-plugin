@@ -80,7 +80,7 @@ public class LDAPGroupSyncSchedulerJobRunnerImpl implements LDAPGroupSyncSchedul
         try {               
             ctx = ldapGroupSyncUtil.getLdapContext();
                         
-            for(LdapGroupSyncMapBean bean : ldapGroupSyncMgr.getSupportedGroupsMapProperties()) {
+            for(LdapGroupSyncMapBean bean : ldapGroupSyncMgr.getGroupsMapProperties()) {
                 MessageBean message = ldapGroupSyncUtil.sync(ctx, bean.getLdapGroup(), bean.getJiraGroup());
                 logger.debug(message.getMessage());
             }

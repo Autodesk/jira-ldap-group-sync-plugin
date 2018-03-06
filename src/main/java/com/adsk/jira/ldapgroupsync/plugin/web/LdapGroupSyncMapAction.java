@@ -40,7 +40,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
             return "error";
         }
         if (this.submitted != null && "ADD".equals(this.submitted)) {            
-            LOGGER.debug("Adding groups map -> "+ configBean.getLdapGroup() +":"+configBean.getJiraGroup()+":"+ configBean.isSupport());
+            LOGGER.debug("Adding groups map -> "+ configBean.getLdapGroup() +":"+configBean.getJiraGroup());
             if(ldapGroupAoMgr.findGroupsMapProperty(configBean) == false) {
                 if(configBean.getLdapGroup() != null && !"".equals(configBean.getLdapGroup()) 
                         && configBean.getJiraGroup() !=null && !"".equals(configBean.getJiraGroup())) {
@@ -118,14 +118,6 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     public void setJiraGroup(String jiraGroup) {
         configBean.setJiraGroup(jiraGroup);
     }
-    
-    public boolean isSupport() {
-        return configBean.isSupport();
-    }
-
-    public void setSupport(boolean support) {
-        configBean.setSupport(support);
-    }
 
     public long getInterval() {
         return interval;
@@ -136,7 +128,7 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
     }        
     
     public List<LdapGroupSyncMapBean> getConfigList() {
-        return ldapGroupAoMgr.getAllGroupsMapProperties();
+        return ldapGroupAoMgr.getGroupsMapProperties();
     }
     
     public void setSubmitted(String submitted) {

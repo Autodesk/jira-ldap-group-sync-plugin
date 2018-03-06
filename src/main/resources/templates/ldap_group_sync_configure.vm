@@ -124,7 +124,7 @@
         $i18n.getText("jira.ldap.group.configure.option.ldap_url.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="text" id="ldap_url" name="ldap_url" class="text long-field" value="$!ldap_url" />
+    <input type="text" id="ldap_url" name="ldap_url" class="text long-field" value="$!ldap_url" required/>
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.ldap_url.description")</div>
 </div>
 
@@ -133,7 +133,7 @@
         $i18n.getText("jira.ldap.group.configure.option.security_principal.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="text" id="security_principal" name="security_principal" class="text long-field" value="$!security_principal" />
+    <input type="text" id="security_principal" name="security_principal" class="text long-field" value="$!security_principal" required/>
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.security_principal.description")</div>
 </div>
 
@@ -142,7 +142,7 @@
         $i18n.getText("jira.ldap.group.configure.option.security_password.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="password" id="security_password" name="security_password" class="text" value="$!security_password" />
+    <input type="password" id="security_password" name="security_password" class="text" value="$!security_password" required/>
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.security_password.description")</div>
 </div>
 
@@ -151,7 +151,7 @@
         $i18n.getText("jira.ldap.group.configure.option.base_dn.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="text" id="base_dn" name="base_dn" class="text long-field" value="$!base_dn" />
+    <input type="text" id="base_dn" name="base_dn" class="text long-field" value="$!base_dn" required/>
     <div class="description">$i18n.getText("jira.ldap.group.configure.option.base_dn.description")</div>
 </div>
 

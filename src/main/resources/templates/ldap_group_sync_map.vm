@@ -11,7 +11,7 @@
             AJS.$("#AdskLDAPGroupMapAdd").stop().slideDown();
             AJS.$("#AdskLDAPGroupMapEdit").stop().slideUp();
         }
-        function prepareEdit(configId, ldapGroup, jiraGroup, support) {
+        function prepareEdit(configId, ldapGroup, jiraGroup) {
             AJS.$("#AdskLDAPGroupMapSchedule").stop().slideUp();
             AJS.$("#AdskLDAPGroupMapDel").stop().slideUp();
             AJS.$("#AdskLDAPGroupMapAdd").stop().slideUp();
@@ -20,7 +20,6 @@
             AJS.$("#AdskLDAPGroupMapEditForm input[name='configIds']").val(configId);
             AJS.$("#AdskLDAPGroupMapEditForm input[name='ldapGroup']").val(ldapGroup);
             AJS.$("#AdskLDAPGroupMapEditForm input[name='jiraGroup']").val(jiraGroup);
-            AJS.$("#AdskLDAPGroupMapEditForm select[name='support']").val(support);
             location.hash = "#AdskLDAPGroupMapEdit";
         }
         
@@ -71,7 +70,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
-        placeholder="Enter distribution email list alias or LDAP security group name" />
+        placeholder="Enter distribution email list alias or LDAP security group name" required/>
 </div>
 <div class="field-group">
     <label for="jira_group">
@@ -79,17 +78,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" 
-        placeholder="Your JIRA Group Name" />
-</div>
-<div class="field-group">
-    <label for="support">
-        $i18n.getText("jira.ldap.group.configure.option.support.label"):
-        <span class="aui-icon icon-required"></span>
-    </label>
-    <select id="support" name="support" class="text">        
-        <option value="true">TRUE</option>
-        <option value="false">FALSE</option>
-    </select>
+        placeholder="Your JIRA Group Name" required/>
 </div>
 <div class="aui-buttons">
     <input class="aui-button aui-button-primary" type="submit" name="submitted" value="ADD" />
@@ -108,7 +97,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
-        placeholder="Enter distribution email list alias or LDAP security group name" />
+        placeholder="Enter distribution email list alias or LDAP security group name" required/>
 </div>
 <div class="field-group">
     <label for="jira_group">
@@ -116,17 +105,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" 
-        placeholder="Your JIRA Group Name" />
-</div>
-<div class="field-group">
-    <label for="support">
-        $i18n.getText("jira.ldap.group.configure.option.support.label"):
-        <span class="aui-icon icon-required"></span>
-    </label>
-    <select id="support" name="support" class="text">        
-        <option value="true">TRUE</option>
-        <option value="false">FALSE</option>
-    </select>    
+        placeholder="Your JIRA Group Name" required/>
 </div>
 <div class="aui-buttons">
     <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Save" />
@@ -207,10 +186,9 @@
         <td>
             <a class="adskldapsync_edit" title="Edit Map Configuration" href="#"
                 onClick="prepareEdit('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)', 
-                        '$textutils.htmlEncode($entry.jiraGroup)', '$entry.support')"></a>
-            <a class="adskldapsync_delete" href="#" title="Delete Config" 
-                onClick="prepareDelete('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)', 
                         '$textutils.htmlEncode($entry.jiraGroup)')"></a>
+            <a class="adskldapsync_delete" href="#" title="Delete Config" 
+                onClick="prepareDelete('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)')"></a>
         </td>        
         </tr>
     #end

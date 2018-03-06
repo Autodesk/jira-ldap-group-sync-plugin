@@ -15,13 +15,11 @@ import java.util.List;
  */
 public interface LdapGroupSyncAOMgr {
     public ActiveObjects getActiveObjects();
-    public List<LdapGroupSyncMapBean> getAllGroupsMapProperties();
-    public List<LdapGroupSyncMapBean> getSupportedGroupsMapProperties();
+    public List<LdapGroupSyncMapBean> getGroupsMapProperties();
     public LdapGroupSyncMapBean getGroupsMapProperty(long configId);
     public void addGroupsMapProperty(LdapGroupSyncMapBean configBean);
     public void setGroupsMapProperty(LdapGroupSyncMapBean configBean);
     public boolean findGroupsMapProperty(LdapGroupSyncMapBean configBean);
     public boolean findGroupsMapProperty2(LdapGroupSyncMapBean configBean);
-    public boolean isJiraGroupNotInSupport(String jiraGroup);
     public void removeGroupsMapProperty(long configId);
 }
