@@ -18,11 +18,11 @@ import javax.naming.ldap.LdapContext;
  */
 public interface LDAPGroupSyncUtil {
     
-    public List<String> getUsersInGroup(LdapContext ctx, String groupName);
+    public List<String> getUsersInLdapGroup(LdapContext ctx, String groupName);
     
-    public List<String> getNestedGroups(LdapContext ctx, String groupName);
+    public List<String> getNestedLdapGroups(LdapContext ctx, String groupName);
     
-    public Set<String> getGroupMembers(LdapContext ctx, String groupName);
+    public Set<String> getLdapGroupMembers(LdapContext ctx, String groupName);
     
     public SearchControls getGroupSearchControls();
     

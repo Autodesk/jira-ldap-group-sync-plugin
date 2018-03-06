@@ -99,7 +99,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         }
     }
     
-    public List<String> getUsersInGroup(LdapContext ctx, String groupName) {
+    public List<String> getUsersInLdapGroup(LdapContext ctx, String groupName) {
         List<String> users = new ArrayList<String>();
         try {            
             String searchFilter = MessageFormat.format(UserMemberSearchFilter, groupName);
@@ -125,7 +125,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         return users;
     }   
     
-    public List<String> getNestedGroups(LdapContext ctx, String groupName) {
+    public List<String> getNestedLdapGroups(LdapContext ctx, String groupName) {
         List<String> groups = new ArrayList<String>();
         try {
             if( ctx != null ) {
@@ -144,7 +144,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         return groups;
     }
     
-    public Set<String> getGroupMembers(LdapContext ctx, String groupName) {        
+    public Set<String> getLdapGroupMembers(LdapContext ctx, String groupName) {        
         Set<String> users = null;
         try {
             if( ctx != null ) {
@@ -158,17 +158,17 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
                     
                     users = new HashSet<String>(); // create set object
                     
-                    List<String> new_users_list = getUsersInGroup(ctx, sr.getNameInNamespace());
+                    List<String> new_users_list = getUsersInLdapGroup(ctx, sr.getNameInNamespace());
                     if(new_users_list.size() > 0) {
                         users.addAll(new_users_list);
                     }
                     
                     // support nested groups
                     if("TRUE".equalsIgnoreCase(IsNested)) {
-                        List<String> groups = getNestedGroups(ctx, sr.getNameInNamespace());
+                        List<String> groups = getNestedLdapGroups(ctx, sr.getNameInNamespace());
                         if(groups.size() > 0) {
                             for(String group : groups) {
-                                List<String> nested_user_list = getUsersInGroup(ctx, group);
+                                List<String> nested_user_list = getUsersInLdapGroup(ctx, group);
                                 if(nested_user_list.size() > 0) {
                                     users.addAll(nested_user_list);
                                 }
@@ -313,7 +313,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
             return message;
         }
         
-        Set<String> ldap_group_users = getGroupMembers(ctx, ldap_group);                
+        Set<String> ldap_group_users = getLdapGroupMembers(ctx, ldap_group);                
         if( ldap_group_users == null ) {
             logger.debug("LDAP Group ("+ldap_group+") does not exists.");
             message.setMessage("LDAP Group ("+ldap_group+") does not exists.");
