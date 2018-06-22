@@ -23,7 +23,7 @@
             location.hash = "#AdskLDAPGroupMapEdit";
         }
         
-        function prepareDelete(configId, oktaGroup, jiraGroup) {
+        function prepareDelete(configId, ldapGroup, jiraGroup) {
             AJS.$("#AdskLDAPGroupMapSchedule").stop().slideUp();
             AJS.$("#AdskLDAPGroupMapDel").stop().slideDown();
             AJS.$("#AdskLDAPGroupMapAdd").stop().slideUp();
