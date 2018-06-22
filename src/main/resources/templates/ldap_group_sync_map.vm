@@ -190,7 +190,7 @@
                 onClick="prepareEdit('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)', 
                         '$textutils.htmlEncode($entry.jiraGroup)')"></a>
             <a class="adskldapsync_delete" href="#" title="Delete Config" 
-                onClick="prepareDelete('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)')"></a>
+                onClick="prepareDelete('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)', '$textutils.htmlEncode($entry.jiraGroup)')"></a>
         </td>        
         </tr>
     #end
