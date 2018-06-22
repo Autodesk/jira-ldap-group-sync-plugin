@@ -36,23 +36,20 @@ public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSched
     }
     
     public long getInterval() {
-        long interval = 1L;
         try {
-            long sync_interval = Long.parseLong(applicationProperties
-                    .getString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL));
-            if(sync_interval >= 0) {
-                interval = sync_interval;
-            }else{
-                interval = LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
+            String sync_interval_string = applicationProperties
+                    .getString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL);
+            if(sync_interval_string != null && !"".equals(sync_interval_string)) {
+                return Long.parseLong(sync_interval_string);
+            } else {
+                return LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
             }
         } catch (NumberFormatException e) {
             logger.error(e);
             logger.debug("LDAP Group Sync interval property is null so using default: "+ 
                     LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL);
-            
-            interval = LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
         }
-        return interval;
+        return LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
     }
 
     private JobId getJobId() {    

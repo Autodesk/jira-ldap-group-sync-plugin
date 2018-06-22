@@ -93,6 +93,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
                 for(LdapGroupSyncMapBean bean : ldapGroupSyncMgr.getGroupsMapProperties()) {
                     MessageBean message = ldapGroupSyncUtil.sync(ctx, bean.getLdapGroup(), bean.getJiraGroup());
                     logger.debug(message.getMessage());
+                    status = message.getMessage();
                 }
             } catch (Exception e) {
                 status = "There are few LDAP and JIRA Groups Sync failures. "+ e.getLocalizedMessage();
