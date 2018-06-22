@@ -30,7 +30,7 @@
             AJS.$("#AdskLDAPGroupMapEdit").stop().slideUp();
             AJS.$("#AdskLDAPGroupMapDelForm input[name='configId']").val(configId);
             AJS.$("#AdskLDAPGroupMapDelForm input[name='configIds']").val(configId);
-            AJS.$("#AdskLDAPGroupMapDelForm input[name='oktaGroup']").val(oktaGroup);
+            AJS.$("#AdskLDAPGroupMapDelForm input[name='ldapGroup']").val(ldapGroup);
             AJS.$("#AdskLDAPGroupMapDelForm input[name='jiraGroup']").val(jiraGroup);
             location.hash = "#LDAPGroupMapDel";
         }
@@ -129,7 +129,7 @@
         placeholder="Enter distribution email list alias or LDAP security group name" disabled=""/>
 </div>
 <div class="field-group">
-    <label for="jira_group">
+    <label for="jiraGroup">
         $i18n.getText("jira.ldap.group.configure.option.jira_group.label"):
         <span class="aui-icon icon-required"></span>
     </label>
@@ -157,7 +157,8 @@
         $i18n.getText("jira.ldap.group.configure.option.interval.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="number" id="interval" name="interval" class="text" min="1" value="$!interval" />
+    <input type="number" id="interval" name="interval" class="text" min="0" value="$!interval" />
+    <div class="description">$i18n.getText("jira.ldap.group.configure.option.interval.description")</div>
 </div>
 <div class="aui-buttons">
     <input class="aui-button aui-button-primary" type="submit" name="submitted" value="Schedule" />
@@ -191,7 +192,7 @@
                         '$textutils.htmlEncode($entry.jiraGroup)')"></a>
             <a class="adskldapsync_delete" href="#" title="Delete Config" 
                 onClick="prepareDelete('$entry.configId', '$textutils.htmlEncode($entry.ldapGroup)', '$textutils.htmlEncode($entry.jiraGroup)')"></a>
-        </td>        
+        </td>
         </tr>
     #end
 </table>

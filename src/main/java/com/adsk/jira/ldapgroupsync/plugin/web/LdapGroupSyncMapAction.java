@@ -83,11 +83,11 @@ public class LdapGroupSyncMapAction extends JiraWebActionSupport {
         }
         else if (this.submitted != null && "Schedule".equals(this.submitted)) {
             LOGGER.debug("Re-Scheduling Sync with interval -> "+ interval);           
-            if(interval > 0) {
+            if(interval >= 0) {
                 properties.setString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL, ""+interval);
                 status = "Re-scheduled Sync with interval: "+ interval;
                 pluginSchedule.reschedule();
-            }            
+            }
         }
         else {
             interval = pluginSchedule.getInterval();
