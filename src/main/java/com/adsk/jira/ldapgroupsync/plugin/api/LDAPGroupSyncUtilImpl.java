@@ -332,42 +332,57 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         return message;
     }
     
+    public List<String> getLdapGroupStrings(String ldapGroup) {
+        List<String> groups = new ArrayList<String>();
+        String[] fields = ldapGroup.trim().split(",");
+        for(String f : fields){
+            groups.add(f.trim());
+        }
+        return groups;
+    }
+    
     public long process(LdapContext ctx, String ldap_group, String jira_group) {
         
         long index = 0;
         
+        List<String> ldapGroupStrings = getLdapGroupStrings(ldap_group);
+        
         Set<String> ldap_group_users = new HashSet<String>();
         
-        SearchResult sr = getGroupSearchResult(ctx, ldap_group);
+        for(String lGroup : ldapGroupStrings) {
         
-        ldap_group_users.addAll(getLdapGroupMembers(ctx, sr, ldap_group_users));
-        
-        if( ldap_group_users.isEmpty() ) {
-            logger.debug("LDAP Group ("+ldap_group+") does not exists.");
-        
-        } else {
-            
-            logger.debug(" >>> Size: "+ ldap_group_users.size());
-            index = ldap_group_users.size();
-            
-            List<String> jira_group_users = getJiraGroupMembers(jira_group);
-            if( jira_group_users != null ) {            
-                for(String j : jira_group_users) {
-                    if(!ldap_group_users.contains(j)) {
-                        removeUserFromJiraGroup(j, jira_group);
+            SearchResult sr = getGroupSearchResult(ctx, lGroup);
+
+            ldap_group_users.addAll(getLdapGroupMembers(ctx, sr, ldap_group_users));
+
+            if( ldap_group_users.isEmpty() ) {
+                logger.debug("LDAP Group ("+lGroup+") does not exists.");
+
+            } else {
+
+                logger.debug(" >>> Size: "+ ldap_group_users.size());
+                index = ldap_group_users.size();
+
+                List<String> jira_group_users = getJiraGroupMembers(jira_group);
+                if( jira_group_users != null ) {            
+                    for(String j : jira_group_users) {
+                        if(!ldap_group_users.contains(j)) {
+                            removeUserFromJiraGroup(j, jira_group);
+                        }
                     }
-                }
-                for(String i : ldap_group_users) {
-                    if(!jira_group_users.contains(i)) {
+                    for(String i : ldap_group_users) {
+                        if(!jira_group_users.contains(i)) {
+                            addUserToJiraGroup(i, jira_group);
+                        }
+                    }
+                } else {
+                    logger.debug("JIRA Group members return NULL. So adding LDAP users.");
+                    for(String i : ldap_group_users) {
                         addUserToJiraGroup(i, jira_group);
                     }
                 }
-            } else {
-                logger.debug("JIRA Group members return NULL. So adding LDAP users.");
-                for(String i : ldap_group_users) {
-                    addUserToJiraGroup(i, jira_group);
-                }
             }
+        
         }
         
         return index;

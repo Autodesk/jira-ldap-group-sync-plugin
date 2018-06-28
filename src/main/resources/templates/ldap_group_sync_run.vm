@@ -42,7 +42,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" required/>
-    <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.ldap_group.description")</div>
+    <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.ldap_group.description")</div>    
 </div>
 
 <div class="field-group">

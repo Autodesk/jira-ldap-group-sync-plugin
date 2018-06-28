@@ -28,6 +28,7 @@ public class LdapGroupSyncRunAction extends JiraWebActionSupport {
     
     private final LdapGroupSyncAOMgr ldapGroupSyncMgr;
     private final LDAPGroupSyncUtil ldapGroupSyncUtil;
+    
     public LdapGroupSyncRunAction(LdapGroupSyncAOMgr ldapGroupAoMgr, LDAPGroupSyncUtil ldapGroupSyncUtil) {
         this.ldapGroupSyncMgr = ldapGroupAoMgr;
         this.ldapGroupSyncUtil = ldapGroupSyncUtil;

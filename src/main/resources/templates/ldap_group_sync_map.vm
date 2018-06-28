@@ -72,7 +72,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
-        placeholder="Enter distribution email list alias or LDAP security group name" required/>
+        placeholder="Your comma separated ldap groups or distribution mail list" required/>
 </div>
 <div class="field-group">
     <label for="jira_group">
@@ -99,7 +99,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
-        placeholder="Enter distribution email list alias or LDAP security group name" required/>
+        placeholder="Your comma separated ldap groups or distribution mail list" required/>
 </div>
 <div class="field-group">
     <label for="jira_group">
@@ -126,7 +126,7 @@
         <span class="aui-icon icon-required"></span>
     </label>
     <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" 
-        placeholder="Enter distribution email list alias or LDAP security group name" disabled=""/>
+        placeholder="Your comma separated ldap groups or distribution mail list" disabled=""/>
 </div>
 <div class="field-group">
     <label for="jiraGroup">
