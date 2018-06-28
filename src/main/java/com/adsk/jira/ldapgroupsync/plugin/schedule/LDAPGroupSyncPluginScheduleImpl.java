@@ -36,23 +36,20 @@ public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSched
     }
     
     public long getInterval() {
-        long interval = 1L;
         try {
-            long sync_interval = Long.parseLong(applicationProperties
-                    .getString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL));
-            if(sync_interval > 0) {
-                interval = sync_interval;
-            }else{
-                interval = LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
+            String sync_interval_string = applicationProperties
+                    .getString(LDAPGroupSyncSchedulerJobRunner.SYNC_INTERVAL);
+            if(sync_interval_string != null && !"".equals(sync_interval_string)) {
+                return Long.parseLong(sync_interval_string);
+            } else {
+                return LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
             }
         } catch (NumberFormatException e) {
             logger.error(e);
             logger.debug("LDAP Group Sync interval property is null so using default: "+ 
                     LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL);
-            
-            interval = LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
         }
-        return interval;
+        return LDAPGroupSyncSchedulerJobRunner.DEFAULT_INTERVAL;
     }
 
     private JobId getJobId() {    
@@ -69,29 +66,36 @@ public class LDAPGroupSyncPluginScheduleImpl implements LDAPGroupSyncPluginSched
          * conversion here.
          */
         long interval = getInterval();
-        long time_interval = TimeUnit.HOURS.toMillis(interval);
-                
-        if (!this.schedulerService.getRegisteredJobRunnerKeys().contains(getJobRunnerKey())) {        
-          logger.debug("Registering JobRunner - "+ getJobRunnerKey().toString());
-          this.schedulerService.registerJobRunner(getJobRunnerKey(), this.schedulerJobRunner);
-        }
         
-        schedulerJobRunner.setLastRun(new Date()); //set current date time as last execution.
-        
-        Date start =  new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(interval));
-        Schedule schedule = Schedule.forInterval(time_interval, start);
-        JobConfig jobConfig = JobConfig.forJobRunnerKey(getJobRunnerKey())
-                .withRunMode(RunMode.RUN_ONCE_PER_CLUSTER).withSchedule(schedule);
-        try {        
-          logger.debug("Scheduling the LDAP Group Sync Job "+ getJobRunnerKey().toString() +" with "+ 
-                  jobConfig);
-          
-          this.schedulerService.scheduleJob(getJobId(), jobConfig);
+        if(interval > 0) {
+            long time_interval = TimeUnit.HOURS.toMillis(interval);
+
+            if (!this.schedulerService.getRegisteredJobRunnerKeys().contains(getJobRunnerKey())) {        
+              logger.debug("Registering JobRunner - "+ getJobRunnerKey().toString());
+              this.schedulerService.registerJobRunner(getJobRunnerKey(), this.schedulerJobRunner);
+            }
+
+            schedulerJobRunner.setLastRun(new Date()); //set current date time as last execution.
+
+            Date start =  new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(interval));
+            Schedule schedule = Schedule.forInterval(time_interval, start);
+            JobConfig jobConfig = JobConfig.forJobRunnerKey(getJobRunnerKey())
+                    .withRunMode(RunMode.RUN_ONCE_PER_CLUSTER).withSchedule(schedule);
+            
+            try {        
+              logger.debug("Scheduling the LDAP Group Sync Job "+ getJobRunnerKey().toString() +" with "+ 
+                      jobConfig);
+
+              this.schedulerService.scheduleJob(getJobId(), jobConfig);
+            }
+            catch (SchedulerServiceException e) {        
+              logger.error("Failed to schedule the Okta Group Sync Job! ", e);
+            }
+            
+            logger.debug(String.format("LDAP Group Sync task scheduled to run every %dhrs", getInterval()));
+        } else {
+            logger.debug("LDAP Group Sync task schedule NOT registered");
         }
-        catch (SchedulerServiceException e) {        
-          logger.error("Failed to schedule the Okta Group Sync Job! ", e);
-        }
-        logger.debug(String.format("LDAP Group Sync task scheduled to run every %dhrs", getInterval()));
     }
 
     public void onStop() {

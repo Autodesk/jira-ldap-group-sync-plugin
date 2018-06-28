@@ -73,7 +73,7 @@ public class LdapGroupResource {
             return Response.status(Response.Status.FORBIDDEN).entity(authError).build();
         }
                 
-        List<LdapGroupSyncMapBean> results = ldapGroupSyncAoMgr.getAllGroupsMapProperties();
+        List<LdapGroupSyncMapBean> results = ldapGroupSyncAoMgr.getGroupsMapProperties();
         
         long totalTime = System.currentTimeMillis() - startTime;        
         logger.debug("["+loggedInAppUser.getUsername()+"] Get Config. Took "+ totalTime/ 1000d +" Seconds");
@@ -111,11 +111,6 @@ public class LdapGroupResource {
         
         if(defaultJiraGroups.contains(syncBean.getJiraGroup().toLowerCase()) ) { //skip not supported
             messageBean.setMessage("This plugin does not support JIRA default group ("+syncBean.getJiraGroup()+"). Skipping!");
-            return Response.ok(messageBean).build();
-        }
-        
-        if(ldapGroupSyncAoMgr.isJiraGroupNotInSupport(syncBean.getJiraGroup()) == true) { //skip not supported
-            messageBean.setMessage("This JIRA group ("+syncBean.getJiraGroup()+") is mapped not to support. Skipping!");
             return Response.ok(messageBean).build();
         }
                 
@@ -169,11 +164,6 @@ public class LdapGroupResource {
         
         if(defaultJiraGroups.contains(ldapJiraGroup.toLowerCase()) ) { //skip not supported
             messageBean.setMessage("This plugin does not support JIRA default group ("+ldapJiraGroup+"). Skipping!");
-            return Response.ok(messageBean).build();
-        }
-        
-        if(ldapGroupSyncAoMgr.isJiraGroupNotInSupport(ldapJiraGroup) == true) { //skip not supported
-            messageBean.setMessage("This JIRA group ("+ldapJiraGroup+") is mapped not to support. Skipping!");
             return Response.ok(messageBean).build();
         }
         

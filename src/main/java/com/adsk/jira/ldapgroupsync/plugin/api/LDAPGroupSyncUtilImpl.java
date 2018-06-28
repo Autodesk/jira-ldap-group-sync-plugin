@@ -99,10 +99,10 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         }
     }
     
-    public List<String> getUsersInGroup(LdapContext ctx, String groupName) {
+    public List<String> getUsersInLdapGroup(LdapContext ctx, String groupNameSpace) {
         List<String> users = new ArrayList<String>();
         try {            
-            String searchFilter = MessageFormat.format(UserMemberSearchFilter, groupName);
+            String searchFilter = MessageFormat.format(UserMemberSearchFilter, groupNameSpace);
             
             NamingEnumeration answer = ctx.search(baseDn, searchFilter, getMemberSearchControls());
             while (answer.hasMoreElements()) {
@@ -125,7 +125,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         return users;
     }   
     
-    public List<String> getNestedGroups(LdapContext ctx, String groupName) {
+    public List<String> getNestedLdapGroups(LdapContext ctx, String groupName) {
         List<String> groups = new ArrayList<String>();
         try {
             if( ctx != null ) {
@@ -144,8 +144,7 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         return groups;
     }
     
-    public Set<String> getGroupMembers(LdapContext ctx, String groupName) {        
-        Set<String> users = null;
+    public SearchResult getGroupSearchResult(LdapContext ctx, String groupName) {
         try {
             if( ctx != null ) {
                 String searchFilter = MessageFormat.format(GroupSearchFilter, groupName);
@@ -154,25 +153,37 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
                 
                 if (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult)answer.next();                
-                    logger.debug(">>>" + sr.getNameInNamespace());
+                    return sr;
+                }
+            } else {
+                logger.error("LDAP Connection Null or Failed.");
+            }
+        } catch (NamingException e) {
+            logger.error(e);
+        }
+        
+        return null;
+    }
+    
+    public Set<String> getLdapGroupMembers(LdapContext ctx, SearchResult sr, Set<String> users) 
+    {
+        try {
+            if( ctx != null ) {
+                if (sr != null) {                    
+                    logger.debug(" >>>" + sr.getNameInNamespace());
                     
-                    users = new HashSet<String>(); // create set object
-                    
-                    List<String> new_users_list = getUsersInGroup(ctx, sr.getNameInNamespace());
-                    if(new_users_list.size() > 0) {
-                        users.addAll(new_users_list);
-                    }
+                    users.addAll(getUsersInLdapGroup(ctx, sr.getNameInNamespace()));
                     
                     // support nested groups
                     if("TRUE".equalsIgnoreCase(IsNested)) {
-                        List<String> groups = getNestedGroups(ctx, sr.getNameInNamespace());
-                        if(groups.size() > 0) {
-                            for(String group : groups) {
-                                List<String> nested_user_list = getUsersInGroup(ctx, group);
-                                if(nested_user_list.size() > 0) {
-                                    users.addAll(nested_user_list);
-                                }
-                            }
+                        String searchGroupFilter = MessageFormat.format(GroupMemberSearchFilter, sr.getNameInNamespace());
+                        
+                        NamingEnumeration groupAnswer = ctx.search(baseDn, searchGroupFilter, getGroupSearchControls());
+                        
+                        while (groupAnswer.hasMoreElements()) {
+                            SearchResult gsr = (SearchResult) groupAnswer.next();
+                            logger.debug("*** processing nested group *** "+ gsr.getName());
+                            getLdapGroupMembers(ctx, gsr, users);
                         }
                     }
                 }
@@ -302,8 +313,9 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         }
     }
     
+    
+    
     public MessageBean sync(LdapContext ctx, String ldap_group, String jira_group) {
-        
         logger.debug(" >>> "+ ldap_group +" : "+ jira_group +" <<< ");
         MessageBean message = new MessageBean();
         
@@ -313,41 +325,67 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
             return message;
         }
         
-        Set<String> ldap_group_users = getGroupMembers(ctx, ldap_group);                
-        if( ldap_group_users == null ) {
-            logger.debug("LDAP Group ("+ldap_group+") does not exists.");
-            message.setMessage("LDAP Group ("+ldap_group+") does not exists.");
-            message.setStatus(1);
-            
-        } else {
-            
-            logger.debug(" >>> Size: "+ ldap_group_users.size());
-            
-            List<String> jira_group_users = getJiraGroupMembers(jira_group);
-            if( jira_group_users != null ) {            
-                for(String j : jira_group_users) {
-                    if(!ldap_group_users.contains(j)) {
-                        removeUserFromJiraGroup(j, jira_group);
+        long index = process(ctx, ldap_group, jira_group);        
+        message.setMessage("Successful. Fetch Size("+index+")");
+        message.setStatus(0);
+        
+        return message;
+    }
+    
+    public Set<String> getLdapGroupStrings(String ldapGroup) {
+        Set<String> groups = new HashSet<String>();
+        String[] fields = ldapGroup.trim().split(",");
+        for(String f : fields){
+            groups.add(f.trim());
+        }
+        return groups;
+    }
+    
+    public long process(LdapContext ctx, String ldap_group, String jira_group) {
+        
+        long index = 0;
+        
+        Set<String> ldapGroupStrings = getLdapGroupStrings(ldap_group);
+        
+        Set<String> ldap_group_users = new HashSet<String>();
+        
+        for(String lGroup : ldapGroupStrings) {
+            logger.debug("*** Processing Ldap Group ("+lGroup+").");
+            SearchResult sr = getGroupSearchResult(ctx, lGroup);
+
+            ldap_group_users.addAll(getLdapGroupMembers(ctx, sr, ldap_group_users));
+
+            if( ldap_group_users.isEmpty() ) {
+                logger.debug("LDAP Group ("+lGroup+") does not exists.");
+
+            } else {
+
+                logger.debug(" >>> Size: "+ ldap_group_users.size());
+                index = ldap_group_users.size();
+
+                List<String> jira_group_users = getJiraGroupMembers(jira_group);
+                if( jira_group_users != null ) {            
+                    for(String j : jira_group_users) {
+                        if(!ldap_group_users.contains(j)) {
+                            removeUserFromJiraGroup(j, jira_group);
+                        }
                     }
-                }
-                for(String i : ldap_group_users) {
-                    if(!jira_group_users.contains(i)) {
+                    for(String i : ldap_group_users) {
+                        if(!jira_group_users.contains(i)) {
+                            addUserToJiraGroup(i, jira_group);
+                        }
+                    }
+                } else {
+                    logger.debug("JIRA Group members return NULL. So adding LDAP users.");
+                    for(String i : ldap_group_users) {
                         addUserToJiraGroup(i, jira_group);
                     }
                 }
-            } else {
-                logger.debug("JIRA Group members return NULL. So adding LDAP users.");
-                for(String i : ldap_group_users) {
-                    addUserToJiraGroup(i, jira_group);
-                }
             }
-                        
-            message.setMessage("Successful. Fetch Size("+ldap_group_users.size()+")");
-            message.setStatus(0);
         
         }
         
-        return message;
+        return index;
     }
 
     public void setLdapUrl(String ldapUrl) {

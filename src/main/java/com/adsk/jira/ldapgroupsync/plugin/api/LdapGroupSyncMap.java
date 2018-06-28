@@ -24,7 +24,4 @@ public interface LdapGroupSyncMap extends Entity {
     
     public void setJiraGroup(String jiraGroup);
     
-    public boolean getSupport();
-    
-    public void setSupport(boolean support);
 }

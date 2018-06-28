@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 
 /**
@@ -18,11 +19,11 @@ import javax.naming.ldap.LdapContext;
  */
 public interface LDAPGroupSyncUtil {
     
-    public List<String> getUsersInGroup(LdapContext ctx, String groupName);
+    public List<String> getUsersInLdapGroup(LdapContext ctx, String groupName);
     
-    public List<String> getNestedGroups(LdapContext ctx, String groupName);
+    public List<String> getNestedLdapGroups(LdapContext ctx, String groupName);
     
-    public Set<String> getGroupMembers(LdapContext ctx, String groupName);
+    public Set<String> getLdapGroupMembers(LdapContext ctx, SearchResult sr, Set<String> users);
     
     public SearchControls getGroupSearchControls();
     
@@ -41,8 +42,10 @@ public interface LDAPGroupSyncUtil {
     public void addUserToJiraGroup(String userName, String groupName);
     
     public void removeUserFromJiraGroup(String userName, String groupName);
-    
-    public MessageBean sync(LdapContext ctx, String ldap_group, String jira_group);
+    public Set<String> getLdapGroupStrings(String ldapGroup);
+    public SearchResult getGroupSearchResult(LdapContext ctx, String groupName);
+    public long process(LdapContext ctx, String ldap_group, String jira_group);
+    public MessageBean sync(LdapContext ctx, String ldap_group, String jira_group);        
     
     public void setLdapUrl(String ldapUrl);
     public void setSecurityPrincipal(String securityPrincipal);

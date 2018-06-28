@@ -19,7 +19,7 @@
 
 
 <p>
-    <a class="aui-button" href="/secure/LdapGroupSyncMapAction.jspa">Go Back</a>
+    <a class="aui-button" href="LdapGroupSyncMapAction.jspa">Back to Manage LDAP Group Sync</a>
 <p>
 
 <p>
@@ -41,8 +41,8 @@
         $i18n.getText("jira.ldap.group.sync.run.option.ldap_group.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" />
-    <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.ldap_group.description")</div>
+    <input type="text" id="ldapGroup" name="ldapGroup" class="text long-field" required/>
+    <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.ldap_group.description")</div>    
 </div>
 
 <div class="field-group">
@@ -50,7 +50,7 @@
         $i18n.getText("jira.ldap.group.sync.run.option.jira_group.label"):
         <span class="aui-icon icon-required"></span>
     </label>
-    <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" />
+    <input type="text" id="jiraGroup" name="jiraGroup" class="text long-field" required/>
     <div class="description">$i18n.getText("jira.ldap.group.sync.run.option.jira_group.description")</div>
 </div>
 

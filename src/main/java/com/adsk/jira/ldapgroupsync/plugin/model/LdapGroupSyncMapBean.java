@@ -11,8 +11,6 @@ public class LdapGroupSyncMapBean {
     private String ldapGroup;
     @JsonProperty
     private String jiraGroup;
-    @JsonProperty
-    private boolean support;
 
     public long getConfigId() {
         return configId;
@@ -36,14 +34,6 @@ public class LdapGroupSyncMapBean {
 
     public void setJiraGroup(String jiraGroup) {
         this.jiraGroup = jiraGroup;
-    }
-
-    public boolean isSupport() {
-        return support;
-    }
-
-    public void setSupport(boolean support) {
-        this.support = support;
     }
     
     public void clear() {
