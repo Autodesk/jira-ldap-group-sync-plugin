@@ -42,7 +42,7 @@ public interface LDAPGroupSyncUtil {
     public void addUserToJiraGroup(String userName, String groupName);
     
     public void removeUserFromJiraGroup(String userName, String groupName);
-    public List<String> getLdapGroupStrings(String ldapGroup);
+    public Set<String> getLdapGroupStrings(String ldapGroup);
     public SearchResult getGroupSearchResult(LdapContext ctx, String groupName);
     public long process(LdapContext ctx, String ldap_group, String jira_group);
     public MessageBean sync(LdapContext ctx, String ldap_group, String jira_group);        

@@ -332,8 +332,8 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         return message;
     }
     
-    public List<String> getLdapGroupStrings(String ldapGroup) {
-        List<String> groups = new ArrayList<String>();
+    public Set<String> getLdapGroupStrings(String ldapGroup) {
+        Set<String> groups = new HashSet<String>();
         String[] fields = ldapGroup.trim().split(",");
         for(String f : fields){
             groups.add(f.trim());
@@ -345,12 +345,12 @@ public class LDAPGroupSyncUtilImpl implements LDAPGroupSyncUtil {
         
         long index = 0;
         
-        List<String> ldapGroupStrings = getLdapGroupStrings(ldap_group);
+        Set<String> ldapGroupStrings = getLdapGroupStrings(ldap_group);
         
         Set<String> ldap_group_users = new HashSet<String>();
         
         for(String lGroup : ldapGroupStrings) {
-        
+            logger.debug("*** Processing Ldap Group ("+lGroup+").");
             SearchResult sr = getGroupSearchResult(ctx, lGroup);
 
             ldap_group_users.addAll(getLdapGroupMembers(ctx, sr, ldap_group_users));
